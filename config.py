@@ -12,16 +12,16 @@ torch.manual_seed(SEED)
 torch.cuda.manual_seed_all(SEED)
 
 # Preprocessing using preserved HU in dilated part of mask
-BASE = '/home/htang6/workspace/data/LIDC/' # make sure you have the ending '/'
+BASE = '/research/dept8/jzwang/dataset/LUNA16/' # make sure you have the ending '/'
 data_config = {
     # put combined LUNA16 .mhd files into one folder
     'data_dir': BASE + 'combined',
 
     # directory for putting all preprocessed results for training to this path
-    'preprocessed_data_dir': BASE + 'preprocessed_test/3',
+    'preprocessed_data_dir': BASE + 'preprocessed_test/',
 
     # put annotation downloaded from LIDC to this path
-    'annos_dir': BASE + 'annotation/LIDC-XML-only/tcia-lidc-xml',
+    'annos_dir': BASE + 'tcia-lidc-xml',
 
     # put lung mask downloaded from LUNA16 to this path
     'lung_mask_dir': BASE + 'seg-lungs-LUNA16/',
@@ -74,7 +74,7 @@ net_config = {
     # region proposal network configuration
     'rpn_train_bg_thresh_high': 0.02,
     'rpn_train_fg_thresh_low': 0.5,
-    
+
     'rpn_train_nms_num': 300,
     'rpn_train_nms_pre_score_threshold': 0.5,
     'rpn_train_nms_overlap_threshold': 0.1,
@@ -97,8 +97,8 @@ net_config = {
     'mask_test_nms_overlap_threshold': 0.3,
 
     'box_reg_weight': [1., 1., 1., 1., 1., 1.]
-    
-    
+
+
 }
 
 
