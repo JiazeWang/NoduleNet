@@ -1,5 +1,5 @@
 import sys
-sys.path.append('./')
+sys.path.append('/research/dept8/jzwang/code/NoduleNet')
 from pylung.annotation import *
 from tqdm import tqdm
 import sys
@@ -34,7 +34,7 @@ def xml2mask(xml_file):
                 for roi_xy in roi.roi_xy:
                     ctr_arr.append([z, roi_xy[1], roi_xy[0]])
             ctr_arrs.append(ctr_arr)
-            
+
     seriesuid = header.series_instance_uid
     return seriesuid, ctr_arrs
 
@@ -47,19 +47,19 @@ def annotation2masks(annos_dir, save_dir):
             np.save(os.path.join(save_dir, '%s' % (seriesuid)), masks)
         except:
             print("Unexpected error:", sys.exc_info()[0])
-    
+
 def arr2mask(arr, reso):
     mask = np.zeros(reso)
     arr = arr.astype(np.int32)
     mask[arr[:, 0], arr[:, 1], arr[:, 2]] = 1
-    
+
     return mask
 
 def arrs2mask(img_dir, ctr_arr_dir, save_dir):
     pids = [f[:-4] for f in os.listdir(img_dir) if f.endswith('.mhd')]
     cnt = 0
     consensus = {1: 0, 2: 0, 3: 0, 4: 0}
-    
+
     for k in consensus.keys():
         if not os.path.exists(os.path.join(save_dir, str(k))):
             os.makedirs(os.path.join(save_dir, str(k)))
@@ -127,19 +127,19 @@ def arrs2mask(img_dir, ctr_arr_dir, save_dir):
         # number of consensus
         num = np.array([len(m) for m in masks])
         num[num > 4] = 4
-        
+
         if len(num) == 0:
             continue
         # Iterate from the nodules with most consensus
         for n in range(num.max(), 0, -1):
             mask = np.zeros(img.shape, dtype=np.uint8)
-            
+
             for i, index in enumerate(np.where(num >= n)[0]):
                 same_nodules = masks[index]
                 m = np.logical_or.reduce(same_nodules)
                 mask[m] = i + 1
             nrrd.write(os.path.join(save_dir, str(n), pid), mask)
-        
+
 #         for i, same_nodules in enumerate(masks):
 #             cons = len(same_nodules)
 #             if cons > 4:
@@ -147,7 +147,7 @@ def arrs2mask(img_dir, ctr_arr_dir, save_dir):
 #             m = np.logical_or.reduce(same_nodules)
 #             mask[m] = i + 1
 #             nrrd.write(os.path.join(save_dir, str(cons), pid), mask)
-        
+
     print(consensus)
     print(cnt)
 
