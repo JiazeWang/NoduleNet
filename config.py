@@ -113,7 +113,7 @@ def lr_shedule(epoch, init_lr=0.01, total=200):
 
 train_config = {
     'net': 'NoduleNet',
-    'batch_size': 16,
+    'batch_size': 24,
 
     'lr_schedule': lr_shedule,
     'optimizer': 'SGD',
@@ -144,8 +144,8 @@ elif train_config['optimizer'] == 'RMSprop':
 
 train_config['RESULTS_DIR'] = os.path.join(train_config['ROOT_DIR'], 'results')
 train_config['out_dir'] = os.path.join(train_config['RESULTS_DIR'], 'cross_val_test')
-#train_config['initial_checkpoint'] = None #train_config['out_dir'] + '/model/027.ckpt'
-train_config['initial_checkpoint'] = '/research/dept8/jzwang/code/NoduleNet/models/200.ckpt'
+train_config['initial_checkpoint'] = None #train_config['out_dir'] + '/model/027.ckpt'
+#train_config['initial_checkpoint'] = '/research/dept8/jzwang/code/NoduleNet/models/200.ckpt'
 
 
 config = dict(data_config, **net_config)
