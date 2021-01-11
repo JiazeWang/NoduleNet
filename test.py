@@ -93,7 +93,7 @@ def main():
 
 def eval(net, dataset, save_dir=None):
     net.set_mode('eval')
-    net.use_mask = False
+    net.use_mask = True
     net.use_rcnn = True
     aps = []
     dices = []
@@ -134,7 +134,7 @@ def eval(net, dataset, save_dir=None):
                 print
             else:
                 pred_mask = np.zeros((input[0].shape))
-            
+
             np.save(os.path.join(save_dir, '%s.npy' % (pid)), pred_mask)
 
             print('rpn', rpns.shape)
@@ -163,7 +163,7 @@ def eval(net, dataset, save_dir=None):
             del input, truth_bboxes, truth_labels, truth_masks, mask, image,
             torch.cuda.empty_cache()
             traceback.print_exc()
-                        
+
             print
             return
 
@@ -172,7 +172,7 @@ def eval(net, dataset, save_dir=None):
     print('mAP: ', np.mean(aps, 0))
     print('mean dice:%.4f(%.4f)' % (np.mean(dices), np.std(dices)))
     print('mean dice (exclude fn):%.4f(%.4f)' % (np.mean(dices[dices != 0]), np.std(dices[dices != 0])))
-    
+
     # Generate prediction csv for the use of performning FROC analysis
     # Save both rpn and rcnn results
     rpn_res = []
@@ -196,7 +196,7 @@ def eval(net, dataset, save_dir=None):
             ensembles = ensembles[:, [3, 2, 1, 4, 0]]
             names = np.array([[pid]] * len(ensembles))
             ensemble_res.append(np.concatenate([names, ensembles], axis=1))
-    
+
     rpn_res = np.concatenate(rpn_res, axis=0)
     rcnn_res = np.concatenate(rcnn_res, axis=0)
     ensemble_res = np.concatenate(ensemble_res, axis=0)
@@ -205,7 +205,7 @@ def eval(net, dataset, save_dir=None):
     rpn_submission_path = os.path.join(eval_dir, 'submission_rpn.csv')
     rcnn_submission_path = os.path.join(eval_dir, 'submission_rcnn.csv')
     ensemble_submission_path = os.path.join(eval_dir, 'submission_ensemble.csv')
-    
+
     df = pd.DataFrame(rpn_res, columns=col_names)
     df.to_csv(rpn_submission_path, index=False)
 
@@ -234,7 +234,7 @@ def eval(net, dataset, save_dir=None):
     noduleCADEvaluation('evaluationScript/annotations/LIDC/3_annotation.csv',
     'evaluationScript/annotations/LIDC/3_annotation_excluded.csv',
     dataset.set_name, ensemble_submission_path, os.path.join(eval_dir, 'ensemble'))
-        
+
     print
 
 
@@ -243,11 +243,11 @@ def eval_single(net, input):
         input = input.cuda().unsqueeze(0)
         logits = net.forward(input)
         logits = logits[0]
-    
+
     masks = logits.cpu().data.numpy()
     masks = (masks > 0.5).astype(np.int32)
     return masks
- 
+
 
 if __name__ == '__main__':
     main()
