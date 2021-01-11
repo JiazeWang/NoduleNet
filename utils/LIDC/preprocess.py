@@ -1,5 +1,6 @@
 import sys
 sys.path.append('./')
+sys.path.append('/research/dept8/jzwang/code/NoduleNet')
 import numpy as np
 import scipy.ndimage
 from skimage import measure, morphology
@@ -569,10 +570,10 @@ def auxiliary_segment(image):
         image = image.copy()
         D, H, W = image.shape
         sitk_img = sitk.GetImageFromArray(image)
-        
+
         for i in range(D):
             image[i] = sitk.GetArrayFromImage(sitk.BinaryFillhole(sitk_img[:, :, i]))
-            
+
         return sitk.GetImageFromArray(image)
 
     def morphology_closing_2d(image):
@@ -583,10 +584,10 @@ def auxiliary_segment(image):
         image = image.copy()
         D, H, W = image.shape
         sitk_img = sitk.GetImageFromArray(image)
-        
+
         for i in range(D):
             image[i] = sitk.GetArrayFromImage(sitk.BinaryMorphologicalOpening(sitk_img[:, :, i], 5))
-            
+
         return sitk.GetImageFromArray(image)
 
     mask = 1 - sitk.OtsuThreshold(sitk.GetImageFromArray(image))
@@ -595,7 +596,7 @@ def auxiliary_segment(image):
     mask_npy = sitk.GetArrayFromImage(mask)
     chest_mask = fill_hole_2d(mask_npy)
     lung_mask = sitk.Subtract(sitk.GetImageFromArray(sitk.GetArrayFromImage(chest_mask)), mask)
-        
+
     # Remove areas not in the chest, when CT covers regions below the chest
     eroded_mask = sitk.BinaryErode(lung_mask, 15)
     seed_npy = sitk.GetArrayFromImage(eroded_mask)
@@ -604,13 +605,13 @@ def auxiliary_segment(image):
     connected_lung = sitk.ConfidenceConnected(lung_mask, seeds, multiplier=2.5)
     final_mask = sitk.BinaryMorphologicalClosing(connected_lung, 5)
     final_mask = sitk.BinaryDilate(final_mask, 5)
-    
+
     return sitk.GetArrayFromImage(final_mask)
 
 
 def preprocess(params):
     pid, lung_mask_dir, nod_mask_dir, img_dir, save_dir, do_resample = params
-    
+
     print('Preprocessing %s...' % (pid))
 
     lung_mask, _, _ = load_itk_image(os.path.join(lung_mask_dir, '%s.mhd' % (pid)))
@@ -662,7 +663,7 @@ def generate_label(params):
         zz, yy, xx = np.where(mask)
         d = max(zz.max() - zz.min() + 1,  yy.max() - yy.min() + 1, xx.max() - xx.min() + 1)
         bboxes.append(np.array([(zz.max() + zz.min()) / 2., (yy.max() + yy.min()) / 2., (xx.max() + xx.min()) / 2., d]))
-        
+
     bboxes = np.array(bboxes)
     if not len(bboxes):
         print('%s does not have any nodules!!!' % (pid))
@@ -680,23 +681,23 @@ def main():
     save_dir = os.path.join(config['preprocessed_data_dir'])
     print('nod mask dir', nod_mask_dir)
     print('save dir ', save_dir)
-    
+
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
-        
+
     params_lists = []
     for pid in os.listdir(nod_mask_dir):
         params_lists.append([pid, lung_mask_dir, nod_mask_dir, img_dir, save_dir, do_resample])
-    
+
     pool = Pool(processes=10)
     pool.map(preprocess, params_lists)
-    
+
     pool.close()
     pool.join()
 
     pool = Pool(processes=10)
     pool.map(generate_label, params_lists)
-    
+
     pool.close()
     pool.join()
 
