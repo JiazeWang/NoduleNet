@@ -167,11 +167,11 @@ def eval(net, dataset, save_dir=None):
             print
             return
 
-    aps = np.array(aps)
-    dices = np.array(dices)
-    print('mAP: ', np.mean(aps, 0))
-    print('mean dice:%.4f(%.4f)' % (np.mean(dices), np.std(dices)))
-    print('mean dice (exclude fn):%.4f(%.4f)' % (np.mean(dices[dices != 0]), np.std(dices[dices != 0])))
+    #aps = np.array(aps)
+    #dices = np.array(dices)
+    #print('mAP: ', np.mean(aps, 0))
+    #print('mean dice:%.4f(%.4f)' % (np.mean(dices), np.std(dices)))
+    #print('mean dice (exclude fn):%.4f(%.4f)' % (np.mean(dices[dices != 0]), np.std(dices[dices != 0])))
 
     # Generate prediction csv for the use of performning FROC analysis
     # Save both rpn and rcnn results
