@@ -125,13 +125,13 @@ def eval(net, dataset, save_dir=None):
                 pred_mask = pred_mask.astype(np.uint8)
 
                 # compute average precisions
-                ap, dice = average_precision(gt_mask, pred_mask)
-                aps.append(ap)
-                dices.extend(dice.tolist())
-                print(ap)
-                print('AP: ', np.mean(ap))
-                print('DICE: ', dice)
-                print
+                #ap, dice = average_precision(gt_mask, pred_mask)
+                #aps.append(ap)
+                #dices.extend(dice.tolist())
+                #print(ap)
+                #print('AP: ', np.mean(ap))
+                #print('DICE: ', dice)
+                #print
             else:
                 pred_mask = np.zeros((input[0].shape))
 
