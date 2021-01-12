@@ -18,7 +18,7 @@ import random
 import traceback
 from torch.utils.tensorboard import SummaryWriter
 
-
+from torch.nn.parallel.data_parallel import data_parallel
 os.environ['CUDA_VISIBLE_DEVICES'] = '0,1,2,3'
 this_module = sys.modules[__name__]
 
@@ -102,19 +102,19 @@ def main():
             dataset = BboxReader(data_dir, set_name, config, mode='val')
         elif label_type == 'mask':
             dataset = MaskReader(data_dir, set_name, config, mode='val')
-            
+
         val_dataset_list.append(dataset)
-        
+
     train_loader = DataLoader(ConcatDataset(train_dataset_list), batch_size=batch_size, shuffle=True,
                               num_workers=num_workers, pin_memory=True, collate_fn=train_collate)
     val_loader = DataLoader(ConcatDataset(val_dataset_list), batch_size=batch_size, shuffle=False,
                               num_workers=num_workers, pin_memory=True, collate_fn=train_collate)
-    
-    
+
+
     # Initilize network
     net = getattr(this_module, net)(net_config)
     net = net.cuda()
-    
+
     optimizer = getattr(torch.optim, optimizer)
     # optimizer = optimizer(net.parameters(), lr=init_lr, weight_decay=weight_decay)
     optimizer = optimizer(net.parameters(), lr=init_lr, weight_decay=weight_decay, momentum=momentum)
@@ -134,7 +134,7 @@ def main():
         except:
             print('Load something failed!')
             traceback.print_exc()
-
+    net = data_parallel(net)
     start_epoch = start_epoch + 1
 
     model_out_dir = os.path.join(out_dir, 'model')
@@ -247,7 +247,7 @@ def train(net, train_loader, optimizer, epoch, writer):
         torch.cuda.empty_cache()
 
     rpn_stats = np.asarray(rpn_stats, np.float32)
-    
+
     print('Train Epoch %d, iter %d, total time %f, loss %f' % (epoch, j, time.time() - s, np.average(total_loss)))
     print('rpn_cls %f, rpn_reg %f, rcnn_cls %f, rcnn_reg %f, mask_loss %f' % \
         (np.average(rpn_cls_loss), np.average(rpn_reg_loss),
@@ -283,7 +283,7 @@ def train(net, train_loader, optimizer, epoch, writer):
     if net.use_rcnn:
         confusion_matrix = np.asarray([stat[-1] for stat in rcnn_stats], np.int32)
         rcnn_stats = np.asarray([stat[:-1] for stat in rcnn_stats], np.float32)
-        
+
         confusion_matrix = np.sum(confusion_matrix, 0)
 
         print('rcnn_stats: reg %.4f, %.4f, %.4f, %.4f, %.4f, %.4f' % (
@@ -300,7 +300,7 @@ def train(net, train_loader, optimizer, epoch, writer):
         writer.add_scalar('rcnn_reg_d', np.mean(rcnn_stats[:, 3]), epoch)
         writer.add_scalar('rcnn_reg_h', np.mean(rcnn_stats[:, 4]), epoch)
         writer.add_scalar('rcnn_reg_w', np.mean(rcnn_stats[:, 5]), epoch)
-    
+
     if net.use_mask:
         mask_stats = np.array(mask_stats)
         for i in range(len(mask_stats[0])):
@@ -310,7 +310,7 @@ def train(net, train_loader, optimizer, epoch, writer):
             writer.add_scalar('mask_%s' % (config['roi_names'][i]), np.round(np.mean(s_region), 4), epoch)
     print
     print
-    
+
 
 def validate(net, val_loader, epoch, writer):
     net.set_mode('valid')
@@ -359,7 +359,7 @@ def validate(net, val_loader, epoch, writer):
         np.mean(rpn_stats[:, 7]),
         np.mean(rpn_stats[:, 8]),
         np.mean(rpn_stats[:, 9])))
-    
+
     # Write to tensorboard
     writer.add_scalar('loss', np.average(total_loss), epoch)
     writer.add_scalar('rpn_cls', np.average(rpn_cls_loss), epoch)
@@ -378,7 +378,7 @@ def validate(net, val_loader, epoch, writer):
     if net.use_rcnn:
         confusion_matrix = np.asarray([stat[-1] for stat in rcnn_stats], np.int32)
         rcnn_stats = np.asarray([stat[:-1] for stat in rcnn_stats], np.float32)
-        
+
         confusion_matrix = np.sum(confusion_matrix, 0)
         print('rcnn_stats: reg %.4f, %.4f, %.4f, %.4f, %.4f, %.4f' % (
             np.mean(rcnn_stats[:, 0]),
@@ -404,7 +404,7 @@ def validate(net, val_loader, epoch, writer):
             writer.add_scalar('mask_%s' % (config['roi_names'][i]), np.round(np.mean(s_region), 4), epoch)
     print
     print
-    
+
     del input, truth_box, truth_label
     del net.rpn_proposals, net.detections
     del net.total_loss, net.rpn_cls_loss, net.rpn_reg_loss, net.rcnn_cls_loss, net.rcnn_reg_loss, net.mask_loss
@@ -422,10 +422,7 @@ def print_confusion_matrix(confusion_matrix):
 
     for i in range(len(config['roi_names']) + 1):
         print(line_new.format(i, *list(confusion_matrix[i])))
-        
+
 
 if __name__ == '__main__':
     main()
-
-
-

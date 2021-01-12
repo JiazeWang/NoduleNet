@@ -113,7 +113,7 @@ def lr_shedule(epoch, init_lr=0.01, total=200):
 
 train_config = {
     'net': 'NoduleNet',
-    'batch_size': 1,
+    'batch_size': 12,
 
     'lr_schedule': lr_shedule,
     'optimizer': 'SGD',
