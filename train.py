@@ -201,7 +201,8 @@ def main():
 
 
 def train(net, train_loader, optimizer, epoch, writer):
-    net.set_mode('train')
+    #net.set_mode('train')
+    net.train()
     s = time.time()
     rpn_cls_loss, rpn_reg_loss = [], []
     rcnn_cls_loss, rcnn_reg_loss = [], []
@@ -313,7 +314,8 @@ def train(net, train_loader, optimizer, epoch, writer):
 
 
 def validate(net, val_loader, epoch, writer):
-    net.set_mode('valid')
+    #net.set_mode('valid')
+    net.eval()
     rpn_cls_loss, rpn_reg_loss = [], []
     rcnn_cls_loss, rcnn_reg_loss = [], []
     mask_loss = []
