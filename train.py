@@ -18,7 +18,7 @@ import random
 import traceback
 from torch.utils.tensorboard import SummaryWriter
 
-import torch.nn as nn
+
 os.environ['CUDA_VISIBLE_DEVICES'] = '0,1,2,3'
 this_module = sys.modules[__name__]
 
@@ -113,7 +113,7 @@ def main():
 
     # Initilize network
     net = getattr(this_module, net)(net_config)
-    net = nn.DataParallel(net).cuda()
+    net = net.cuda()
 
     optimizer = getattr(torch.optim, optimizer)
     # optimizer = optimizer(net.parameters(), lr=init_lr, weight_decay=weight_decay)
@@ -134,6 +134,7 @@ def main():
         except:
             print('Load something failed!')
             traceback.print_exc()
+
     start_epoch = start_epoch + 1
 
     model_out_dir = os.path.join(out_dir, 'model')
@@ -200,8 +201,7 @@ def main():
 
 
 def train(net, train_loader, optimizer, epoch, writer):
-    #net.set_mode('train')
-    net.train()
+    net.set_mode('train')
     s = time.time()
     rpn_cls_loss, rpn_reg_loss = [], []
     rcnn_cls_loss, rcnn_reg_loss = [], []
@@ -313,8 +313,7 @@ def train(net, train_loader, optimizer, epoch, writer):
 
 
 def validate(net, val_loader, epoch, writer):
-    #net.set_mode('valid')
-    net.eval()
+    net.set_mode('valid')
     rpn_cls_loss, rpn_reg_loss = [], []
     rcnn_cls_loss, rcnn_reg_loss = [], []
     mask_loss = []
