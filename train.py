@@ -18,7 +18,7 @@ import random
 import traceback
 from torch.utils.tensorboard import SummaryWriter
 
-from torch.nn.parallel.data_parallel import data_parallel
+import torch.nn.parallel
 os.environ['CUDA_VISIBLE_DEVICES'] = '0,1,2,3'
 this_module = sys.modules[__name__]
 
@@ -134,7 +134,7 @@ def main():
         except:
             print('Load something failed!')
             traceback.print_exc()
-    net = data_parallel(net)
+    net = torch.nn.DataParallel(net)
     start_epoch = start_epoch + 1
 
     model_out_dir = os.path.join(out_dir, 'model')
