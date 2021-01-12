@@ -113,7 +113,7 @@ def main():
 
     # Initilize network
     net = getattr(this_module, net)(net_config)
-    net = net.cuda()
+    net = nn.DataParallel(net).cuda()
 
     optimizer = getattr(torch.optim, optimizer)
     # optimizer = optimizer(net.parameters(), lr=init_lr, weight_decay=weight_decay)
@@ -134,7 +134,6 @@ def main():
         except:
             print('Load something failed!')
             traceback.print_exc()
-    net = nn.DataParallel(net)
     start_epoch = start_epoch + 1
 
     model_out_dir = os.path.join(out_dir, 'model')
