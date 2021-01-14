@@ -93,7 +93,7 @@ def main():
 
 def eval(net, dataset, save_dir=None):
     net.set_mode('eval')
-    net.use_mask = True
+    net.use_mask = False
     net.use_rcnn = True
     aps = []
     dices = []
