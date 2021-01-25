@@ -647,7 +647,7 @@ def preprocess(params):
     nrrd.write(os.path.join(save_dir, '%s_clean.nrrd' % (pid)), seg_img)
     #nrrd.write(os.path.join(save_dir, '%s_mask.nrrd' % (pid)), seg_nod_mask)
 
-    print('number of nodules before: %s, afeter preprocessing: %s' % (nod_mask.max(), seg_nod_mask.max()))
+    #print('number of nodules before: %s, afeter preprocessing: %s' % (nod_mask.max(), seg_nod_mask.max()))
     print('Finished %s' % (pid))
     print()
 
