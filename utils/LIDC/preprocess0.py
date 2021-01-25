@@ -642,6 +642,7 @@ def preprocess(params):
     seg_img = seg_img[z_min:z_max, y_min:y_max, x_min:x_max]
     #seg_nod_mask = seg_nod_mask[z_min:z_max, y_min:y_max, x_min:x_max]
     np.save(os.path.join(save_dir, '%s_origin.npy' % (pid)), origin)
+    np.save(os.path.join(save_dir, '%s_spacing_origin.npy' % (pid)), spacing)
     np.save(os.path.join(save_dir, '%s_spacing.npy' % (pid)), resampled_spacing)
     np.save(os.path.join(save_dir, '%s_ebox_origin.npy' % (pid)), np.array((z_min, y_min, x_min)))
     nrrd.write(os.path.join(save_dir, '%s_clean.nrrd' % (pid)), seg_img)
