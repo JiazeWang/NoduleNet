@@ -18,7 +18,7 @@ data_config = {
     'data_dir': BASE + 'combined',
 
     # directory for putting all preprocessed results for training to this path
-    'preprocessed_data_dir': BASE + 'preprocessed_test/',
+    'preprocessed_data_dir': BASE + 'preprocessed_test_v1/',
 
     # put annotation downloaded from LIDC to this path
     'annos_dir': BASE + 'tcia-lidc-xml',
@@ -27,9 +27,9 @@ data_config = {
     'lung_mask_dir': BASE + 'seg-lungs-LUNA16/',
 
     # Directory for saving intermediate results
-    'ctr_arr_save_dir': BASE + 'annotation/mask_test',
-    'mask_save_dir': BASE + 'masks_test',
-    'mask_exclude_save_dir': BASE + 'masks_exclude_test',
+    'ctr_arr_save_dir': BASE + 'annotation/mask_test_v1',
+    'mask_save_dir': BASE + 'masks_test_v1',
+    'mask_exclude_save_dir': BASE + 'masks_exclude_test_v1',
 
 
     'roi_names': ['nodule'],
@@ -120,10 +120,10 @@ train_config = {
     'momentum': 0.9,
     'weight_decay': 1e-4,
 
-    'epochs': 100,
-    'epoch_save': 5,
+    'epochs': 200,
+    'epoch_save': 1,
     'epoch_rcnn': 65,
-    'epoch_mask': 100,
+    'epoch_mask': 80,
     'num_workers': 8,
 
     'train_set_list': ['split/3_train.csv'],
@@ -144,8 +144,8 @@ elif train_config['optimizer'] == 'RMSprop':
 
 train_config['RESULTS_DIR'] = os.path.join(train_config['ROOT_DIR'], 'results')
 train_config['out_dir'] = os.path.join(train_config['RESULTS_DIR'], 'cross_val_test')
-train_config['initial_checkpoint'] = None #train_config['out_dir'] + '/model/027.ckpt'
-#train_config['initial_checkpoint'] = '/research/dept8/jzwang/code/NoduleNet/results/cross_val_test/model/200.ckpt'
+#train_config['initial_checkpoint'] = None #train_config['out_dir'] + '/model/027.ckpt'
+train_config['initial_checkpoint'] = '/research/dept8/jzwang/code/NoduleNet/results/cross_val_test/model/200.ckpt'
 
 
 config = dict(data_config, **net_config)
