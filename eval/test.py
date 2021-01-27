@@ -124,14 +124,6 @@ def eval(net, dataset, save_dir=None):
                 pred_mask = crop_boxes2mask_single(crop_boxes[:, 1:], segments, input.shape[2:])
                 pred_mask = pred_mask.astype(np.uint8)
 
-                # compute average precisions
-                #ap, dice = average_precision(gt_mask, pred_mask)
-                #aps.append(ap)
-                #dices.extend(dice.tolist())
-                #print(ap)
-                #print('AP: ', np.mean(ap))
-                #print('DICE: ', dice)
-                #print
             else:
                 pred_mask = np.zeros((input[0].shape))
 
@@ -167,14 +159,6 @@ def eval(net, dataset, save_dir=None):
             print
             return
 
-    #aps = np.array(aps)
-    #dices = np.array(dices)
-    #print('mAP: ', np.mean(aps, 0))
-    #print('mean dice:%.4f(%.4f)' % (np.mean(dices), np.std(dices)))
-    #print('mean dice (exclude fn):%.4f(%.4f)' % (np.mean(dices[dices != 0]), np.std(dices[dices != 0])))
-
-    # Generate prediction csv for the use of performning FROC analysis
-    # Save both rpn and rcnn results
     rpn_res = []
     rcnn_res = []
     ensemble_res = []
