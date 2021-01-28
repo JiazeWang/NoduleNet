@@ -122,7 +122,7 @@ def eval(net, dataset, save_dir=None):
             print('detection', detections.shape)
             print('ensemble', ensembles.shape)
 
-
+            """
             if len(rpns):
                 rpns = rpns[:, 1:]
                 np.save(os.path.join(save_dir, '%s_rpns.npy' % (pid)), rpns)
@@ -134,7 +134,7 @@ def eval(net, dataset, save_dir=None):
             if len(ensembles):
                 ensembles = ensembles[:, 1:]
                 np.save(os.path.join(save_dir, '%s_ensembles.npy' % (pid)), ensembles)
-
+            """
 
             # Clear gpu memory
             del input#, gt_mask, gt_img, pred_img, full, score
@@ -152,6 +152,7 @@ def eval(net, dataset, save_dir=None):
     rcnn_res = []
     ensemble_res = []
     for pid in dataset.filenames:
+        """
         if os.path.exists(os.path.join(save_dir, '%s_rpns.npy' % (pid))):
             rpns = np.load(os.path.join(save_dir, '%s_rpns.npy' % (pid)))
             rpns = rpns[:, [3, 2, 1, 4, 0]]
@@ -163,21 +164,21 @@ def eval(net, dataset, save_dir=None):
             rcnns = rcnns[:, [3, 2, 1, 4, 0]]
             names = np.array([[pid]] * len(rcnns))
             rcnn_res.append(np.concatenate([names, rcnns], axis=1))
-
+        """
         if os.path.exists(os.path.join(save_dir, '%s_ensembles.npy' % (pid))):
             ensembles = np.load(os.path.join(save_dir, '%s_ensembles.npy' % (pid)))
             ensembles = ensembles[:, [3, 2, 1, 4, 0]]
             names = np.array([[pid]] * len(ensembles))
             ensemble_res.append(np.concatenate([names, ensembles], axis=1))
 
-    rpn_res = np.concatenate(rpn_res, axis=0)
-    rcnn_res = np.concatenate(rcnn_res, axis=0)
+    #rpn_res = np.concatenate(rpn_res, axis=0)
+    #rcnn_res = np.concatenate(rcnn_res, axis=0)
     ensemble_res = np.concatenate(ensemble_res, axis=0)
     col_names = ['seriesuid','coordX','coordY','coordZ','diameter_mm', 'probability']
     eval_dir = os.path.join(save_dir)
-    rpn_submission_path = os.path.join(eval_dir, 'submission_rpn.csv')
-    rcnn_submission_path = os.path.join(eval_dir, 'submission_rcnn.csv')
-    ensemble_submission_path = os.path.join(eval_dir, 'submission_ensemble.csv')
+    #rpn_submission_path = os.path.join(eval_dir, 'submission_rpn.csv')
+    #rcnn_submission_path = os.path.join(eval_dir, 'submission_rcnn.csv')
+    ensemble_submission_path = os.path.join(eval_dir, 'submission.csv')
 
     df = pd.DataFrame(rpn_res, columns=col_names)
     df.to_csv(rpn_submission_path, index=False)
