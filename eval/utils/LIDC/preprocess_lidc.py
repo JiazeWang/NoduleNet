@@ -1,15 +1,26 @@
 import sys
 sys.path.append('./')
-sys.path.append('/research/dept8/jzwang/code/NoduleNet')
+sys.path.append('../../')
 import numpy as np
 import scipy.ndimage
 from skimage import measure, morphology
 import SimpleITK as sitk
+from lungmask import mask
 from multiprocessing import Pool
 import os
 import nrrd
 from scipy.ndimage.measurements import label
-from config import config
+from config_lidc import config_lidc
+
+
+def get_lung(filename, output):
+    reader = sitk.ImageSeriesReader()
+    dcm_series = reader.GetGDCMSeriesFileNames(filename)
+    reader.SetFileNames(dcm_series)
+    img = reader.Execute()
+    segmentation = mask.apply(img)
+    result_out= sitk.GetImageFromArray(segmentation)
+    sitk.WriteImage(result_out, output)
 
 
 def load_itk_image(filename):
@@ -27,10 +38,10 @@ def load_itk_image(filename):
 def load_itk_dicom(filename):
     """Return img array and [z,y,x]-ordered origin and spacing
     """
-    file_reader = sitk.ImageSeriesReader()
+    reader = sitk.ImageSeriesReader()
     dcm_series = reader.GetGDCMSeriesFileNames(filename)
-    file_reader.SetFileName(dcm_series)
-    img = file_reader.Execute()
+    reader.SetFileNames(dcm_series)
+    img = reader.Execute()
     img_array = sitk.GetArrayFromImage(img)
     numpyOrigin = np.array(list(reversed(img.GetOrigin())))
     numpySpacing = np.array(list(reversed(img.GetSpacing())))
