@@ -737,5 +737,3 @@ def main():
 
 if __name__=='__main__':
     main()
-
-    /research/dept8/jzwang/code/NoduleNet/eval/data/lidc10/lidc10/LIDC-IDRI-0008/0-30141/3000549.000000-21954
