@@ -24,6 +24,18 @@ def load_itk_image(filename):
 
     return numpyImage, numpyOrigin, numpySpacing
 
+def load_itk_dicom(filename):
+    """Return img array and [z,y,x]-ordered origin and spacing
+    """
+    file_reader = sitk.ImageSeriesReader()
+    dcm_series = reader.GetGDCMSeriesFileNames(filename)
+    file_reader.SetFileName(dcm_series)
+    img = file_reader.Execute()
+    img_array = sitk.GetArrayFromImage(img)
+    numpyOrigin = np.array(list(reversed(img.GetOrigin())))
+    numpySpacing = np.array(list(reversed(img.GetSpacing())))
+    return numpyImage, numpyOrigin, numpySpacing
+
 def binarize(image, spacing, intensity_thred=-600, sigma=1.0, area_thred=30.0,
              eccen_thred=0.99, corner_side=10):
     """
