@@ -16,7 +16,7 @@ BASE = '/research/dept8/jzwang/code/NoduleNet/eval/data' # make sure you have th
 data_config = {
     # put combined LUNA16 .mhd files into one folder
     'data_dir': BASE + 'combined',
-
+    'data_txt': BASE + 'filedir.txt'
     # directory for putting all preprocessed results for training to this path
     'preprocessed_data_dir': BASE + 'preprocessed_test/',
 
