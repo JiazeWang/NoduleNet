@@ -730,7 +730,7 @@ def main():
     for line in lines:
         line = line.rstrip()
         savedir = '.'.join(line.split("/"))
-        params_lists.append([line, os.path.join(lung_mask_dir, savedir]))
+        params_lists.append([line, os.path.join(lung_mask_dir, savedir)])
     pool = Pool(processes=10)
     pool.map(get_lung, params_lists)
     pool.close()
