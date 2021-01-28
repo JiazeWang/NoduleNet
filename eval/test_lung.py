@@ -174,7 +174,7 @@ def eval(net, dataset, save_dir=None):
     rcnn_res = np.concatenate(rcnn_res, axis=0)
     ensemble_res = np.concatenate(ensemble_res, axis=0)
     col_names = ['seriesuid','coordX','coordY','coordZ','diameter_mm', 'probability']
-    eval_dir = os.path.join(save_dir, 'FROC')
+    eval_dir = os.path.join(save_dir)
     rpn_submission_path = os.path.join(eval_dir, 'submission_rpn.csv')
     rcnn_submission_path = os.path.join(eval_dir, 'submission_rcnn.csv')
     ensemble_submission_path = os.path.join(eval_dir, 'submission_ensemble.csv')
