@@ -62,28 +62,23 @@ def main():
         initial_checkpoint = args.weight
         net = args.net
         out_dir = args.out_dir
-
         net = getattr(this_module, net)(config)
         net = net.cuda()
-
         if initial_checkpoint:
             print('[Loading model from %s]' % initial_checkpoint)
             checkpoint = torch.load(initial_checkpoint)
             # out_dir = checkpoint['out_dir']
             epoch = checkpoint['epoch']
-
             net.load_state_dict(checkpoint['state_dict'])
         else:
             print('No model weight file specified')
             return
-
         print('out_dir', out_dir)
-        save_dir = os.path.join(out_dir, 'res', str(epoch))
+        save_dir = os.path.join(out_dir)
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
-        if not os.path.exists(os.path.join(save_dir, 'FROC')):
-            os.makedirs(os.path.join(save_dir, 'FROC'))
-
+        if not os.path.exists(os.path.join(save_dir)):
+            os.makedirs(os.path.join(save_dir))
         dataset = MaskReader(data_dir, test_set_name, config, mode='eval')
         eval(net, dataset, save_dir)
     else:
@@ -119,10 +114,8 @@ def eval(net, dataset, save_dir=None):
             if len(detections) and net.use_mask:
                 crop_boxes = net.crop_boxes
                 segments = [F.sigmoid(m).cpu().numpy() > 0.5 for m in net.mask_probs]
-
                 pred_mask = crop_boxes2mask_single(crop_boxes[:, 1:], segments, input.shape[2:])
                 pred_mask = pred_mask.astype(np.uint8)
-
             else:
                 pred_mask = np.zeros((input[0].shape))
             print('rpn', rpns.shape)

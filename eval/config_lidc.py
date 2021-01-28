@@ -143,7 +143,7 @@ elif train_config['optimizer'] == 'RMSprop':
 
 
 train_config['RESULTS_DIR'] = os.path.join(train_config['ROOT_DIR'], 'results')
-train_config['out_dir'] = os.path.join(train_config['RESULTS_DIR'], 'cross_val_test')
+train_config['out_dir'] = os.path.join(BASE, 'eval_result')
 train_config['initial_checkpoint'] = 'dlung_v1.ckpt'
 
 
