@@ -132,11 +132,6 @@ class MaskReader(Dataset):
         return img
 
 
-    def load_mask(self, filename):
-        #mask, _ = nrrd.read(os.path.join(self.data_dir, '%s_mask.nrrd' % (filename)))
-        m
-        return mask
-
 
 def pad_to_factor(image, factor=16, pad_value=170):
     _, depth, height, width = image.shape
