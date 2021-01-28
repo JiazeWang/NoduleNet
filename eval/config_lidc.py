@@ -144,7 +144,7 @@ elif train_config['optimizer'] == 'RMSprop':
 
 train_config['RESULTS_DIR'] = os.path.join(train_config['ROOT_DIR'], 'results')
 train_config['out_dir'] = os.path.join(train_config['RESULTS_DIR'], 'cross_val_test')
-train_config['initial_checkpoint'] = '/research/dept8/jzwang/code/NoduleNet/results/cross_val_test/model/200.ckpt'
+train_config['initial_checkpoint'] = 'dlung_v1.ckpt'
 
 
 config = dict(data_config, **net_config)
