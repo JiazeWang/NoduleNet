@@ -15,7 +15,7 @@ torch.cuda.manual_seed_all(SEED)
 BASE = '/research/dept8/jzwang/code/NoduleNet/eval/data/' # make sure you have the ending '/'
 data_config = {
     # put combined LUNA16 .mhd files into one folder
-    'data_dir': BASE + 'lidc10',
+    'data_dir': BASE
     'data_txt': BASE + 'filedir.txt',
     # directory for putting all preprocessed results for training to this path
     'preprocessed_data_dir': BASE + 'preprocessed_test/',
