@@ -10,7 +10,7 @@ from multiprocessing import Pool
 import os
 import nrrd
 from scipy.ndimage.measurements import label
-from config_lidc import config_lidc
+from config_lidc import config
 
 
 def get_lung(params):
