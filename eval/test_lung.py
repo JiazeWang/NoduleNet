@@ -21,7 +21,7 @@ from net.nodule_net import NoduleNet
 from dataset.collate import train_collate, test_collate, eval_collate
 from dataset.bbox_reader import BboxReader
 from dataset.mask_reader import MaskReader
-from config import config
+from config_lidc import config
 from utils.visualize import draw_gt, draw_pred, generate_image_anim
 from utils.util import dice_score_seperate, get_contours_from_masks, merge_contours, hausdorff_distance
 from utils.util import onehot2multi_mask, normalize, pad2factor, load_dicom_image, crop_boxes2mask_single, npy2submission
@@ -55,7 +55,6 @@ def main():
     # params_eye_L = np.load('weights/params_eye_L.npy').item()
     # params_eye_R = np.load('weights/params_eye_R.npy').item()
     # params_brain_stem = np.load('weights/params_brain_stem.npy').item()
-
     if args.mode == 'eval':
         data_dir = config['preprocessed_data_dir']
         test_set_name = args.test_set_name
@@ -101,7 +100,7 @@ def eval(net, dataset, save_dir=None):
     preprocessed_dir = config['preprocessed_data_dir']
 
     print('Total # of eval data %d' % (len(dataset)))
-    for i, (input, truth_bboxes, truth_labels, truth_masks, mask, image) in enumerate(dataset):
+    for i, (input, image) in enumerate(dataset):
         try:
             D, H, W = image.shape
             pid = dataset.filenames[i]
@@ -111,7 +110,8 @@ def eval(net, dataset, save_dir=None):
 
             with torch.no_grad():
                 input = input.cuda().unsqueeze(0)
-                net.forward(input, truth_bboxes, truth_labels, truth_masks, mask)
+                #net.forward(input, truth_bboxes, truth_labels, truth_masks, mask)
+                net.forward(input)
 
             rpns = net.rpn_proposals.cpu().numpy()
             detections = net.detections.cpu().numpy()
@@ -126,9 +126,6 @@ def eval(net, dataset, save_dir=None):
 
             else:
                 pred_mask = np.zeros((input[0].shape))
-
-            np.save(os.path.join(save_dir, '%s.npy' % (pid)), pred_mask)
-
             print('rpn', rpns.shape)
             print('detection', detections.shape)
             print('ensemble', ensembles.shape)
@@ -200,6 +197,7 @@ def eval(net, dataset, save_dir=None):
     df.to_csv(ensemble_submission_path, index=False)
 
     # Start evaluating
+    """
     if not os.path.exists(os.path.join(eval_dir, 'rpn')):
         os.makedirs(os.path.join(eval_dir, 'rpn'))
     if not os.path.exists(os.path.join(eval_dir, 'rcnn')):
@@ -218,7 +216,7 @@ def eval(net, dataset, save_dir=None):
     noduleCADEvaluation('evaluationScript/annotations/LIDC/3_annotation.csv',
     'evaluationScript/annotations/LIDC/3_annotation_excluded.csv',
     dataset.set_name, ensemble_submission_path, os.path.join(eval_dir, 'ensemble'))
-
+    """
     print
 
 

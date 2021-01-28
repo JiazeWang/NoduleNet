@@ -32,14 +32,14 @@ class MaskReader(Dataset):
 
         if mode != 'test':
             self.filenames = [f for f in self.filenames if (f not in self.blacklist)]
-
+        """
         for fn in self.filenames:
             l = np.load(os.path.join(data_dir, '%s_bboxes.npy' % fn))
 
             if np.all(l==0):
                 l=np.array([])
             labels.append(l)
-
+        """
         self.sample_bboxes = labels
         if self.mode in ['train', 'val', 'eval']:
             self.bboxes = []
@@ -71,13 +71,13 @@ class MaskReader(Dataset):
                 filename = self.filenames[int(bbox[0])]
                 imgs = self.load_img(filename)
                 masks = self.load_mask(filename)
-                    
+
                 bboxes = self.sample_bboxes[int(bbox[0])]
 
                 do_sacle = self.augtype['scale'] and (self.mode=='train')
                 sample, target, masks = self.crop(imgs, bbox[1:], masks, do_sacle, is_random_crop)
                 if self.mode == 'train' and not is_random_crop:
-                     sample, target, masks = augment(sample, target, masks, 
+                     sample, target, masks = augment(sample, target, masks,
                                                              do_flip=self.augtype['flip'], do_rotate=self.augtype['rotate'],
                                                              do_swap=self.augtype['swap'])
             else:
@@ -105,24 +105,24 @@ class MaskReader(Dataset):
 
         if self.mode in ['eval']:
             image = self.load_img(self.filenames[idx])
-            
+
             original_image = image[0]
 
             image = pad2factor(image[0])
             image = np.expand_dims(image, 0)
 
-            mask = self.load_mask(self.filenames[idx])
-            mask = pad2factor(mask)
-            bboxes, truth_masks = masks2bboxes_masks_one(mask, border=self.cfg['bbox_border'])
-            truth_masks = np.array(truth_masks).astype(np.uint8)
-            bboxes = np.array(bboxes)
-            truth_labels = bboxes[:, -1]
-            truth_bboxes = bboxes[:, :-1]
-            masks = np.expand_dims(mask, 0).astype(np.float32)
+            #mask = self.load_mask(self.filenames[idx])
+            #mask = pad2factor(mask)
+            #bboxes, truth_masks = masks2bboxes_masks_one(mask, border=self.cfg['bbox_border'])
+            #truth_masks = np.array(truth_masks).astype(np.uint8)
+            #bboxes = np.array(bboxes)
+            #truth_labels = bboxes[:, -1]
+            #truth_bboxes = bboxes[:, :-1]
+            #masks = np.expand_dims(mask, 0).astype(np.float32)
 
             input = (image.astype(np.float32) - 128.) / 128.
 
-            return [torch.from_numpy(input).float(), truth_bboxes, truth_labels, truth_masks, masks, original_image]
+            return [torch.from_numpy(input).float(), original_image]
 
 
     def __len__(self):
@@ -145,8 +145,8 @@ class MaskReader(Dataset):
 
 
     def load_mask(self, filename):
-        mask, _ = nrrd.read(os.path.join(self.data_dir, '%s_mask.nrrd' % (filename)))
-
+        #mask, _ = nrrd.read(os.path.join(self.data_dir, '%s_mask.nrrd' % (filename)))
+        m
         return mask
 
 
