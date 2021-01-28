@@ -709,6 +709,8 @@ def main():
 
     if not os.path.exists(save_dir):
         os.makedirs(save_dir)
+    if not os.path.exists(lung_mask_dir):
+        os.makedirs(lung_mask_dir)
     """
     params_lists = []
     for pid in os.listdir(nod_mask_dir):
