@@ -13,7 +13,8 @@ from scipy.ndimage.measurements import label
 from config_lidc import config_lidc
 
 
-def get_lung(filename, output):
+def get_lung(params):
+    filename, output = params
     reader = sitk.ImageSeriesReader()
     dcm_series = reader.GetGDCMSeriesFileNames(filename)
     reader.SetFileNames(dcm_series)
@@ -641,7 +642,7 @@ def preprocess(params):
     img, origin, spacing = load_itk_image(os.path.join(img_dir, '%s.mhd' % (pid)))
     nod_mask, _ = nrrd.read(os.path.join(nod_mask_dir, '%s' % (pid)))
 
-    binary_mask1, binary_mask2 = lung_mask == 4, lung_mask == 3
+    binary_mask1, binary_mask2 = lung_mask == 1, lung_mask == 2
     binary_mask = binary_mask1 + binary_mask2
 
     img = HU2uint8(img)
@@ -696,6 +697,7 @@ def generate_label(params):
     np.save(os.path.join(save_dir, '%s_bboxes.npy' % (pid)), bboxes)
 
 def main():
+    """
     n_consensus = 3
     do_resample = True
     lung_mask_dir = config['lung_mask_dir']
@@ -714,13 +716,23 @@ def main():
 
     pool = Pool(processes=10)
     pool.map(preprocess, params_lists)
-
     pool.close()
     pool.join()
 
     pool = Pool(processes=10)
     pool.map(generate_label, params_lists)
-
+    pool.close()
+    pool.join()
+    """
+    with open(config['data_txt'], "r") as f:
+        lines = f.readlines()
+    params_lists = []
+    for line in lines:
+        line = line.rstrip()
+        savedir = '.'.join(line.split("/"))
+        params_lists.append(line, os.path.join(lung_mask_dir, savedir))
+    pool = Pool(processes=10)
+    pool.map(get_lung, params_lists)
     pool.close()
     pool.join()
 
