@@ -29,8 +29,6 @@ class MaskReader(Dataset):
         elif set_name.endswith('.npy'):
             self.filenames = np.load(set_name)
 
-
-
         self.sample_bboxes = labels
         if self.mode in ['train', 'val', 'eval']:
             self.bboxes = []
@@ -38,7 +36,6 @@ class MaskReader(Dataset):
                 if len(l) > 0 :
                     for t in l:
                         self.bboxes.append([np.concatenate([[i],t])])
-            self.bboxes = np.concatenate(self.bboxes,axis = 0).astype(np.float32)
         self.crop = Crop(cfg)
         self.split_combiner = split_combiner
 
