@@ -106,7 +106,6 @@ def eval(net, dataset, save_dir=None):
             pid = dataset.filenames[i]
 
             print('[%d] Predicting %s' % (i, pid), image.shape)
-            gt_mask = mask.astype(np.uint8)
 
             with torch.no_grad():
                 input = input.cuda().unsqueeze(0)
