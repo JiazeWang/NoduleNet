@@ -1,6 +1,6 @@
 import sys
 sys.path.append('./')
-sys.path.append('/research/dept8/jzwang/code/NoduleNet')
+sys.path.append('/research/dept8/jzwang/code/NoduleNet/eval')
 import numpy as np
 import scipy.ndimage
 from skimage import measure, morphology
