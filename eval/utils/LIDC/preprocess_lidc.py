@@ -43,7 +43,7 @@ def load_itk_dicom(filename):
     dcm_series = reader.GetGDCMSeriesFileNames(filename)
     reader.SetFileNames(dcm_series)
     img = reader.Execute()
-    img_array = sitk.GetArrayFromImage(img)
+    numpyImage = sitk.GetArrayFromImage(img)
     numpyOrigin = np.array(list(reversed(img.GetOrigin())))
     numpySpacing = np.array(list(reversed(img.GetSpacing())))
     return numpyImage, numpyOrigin, numpySpacing
