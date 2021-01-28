@@ -638,25 +638,16 @@ def preprocess(params):
 
     print('Preprocessing %s...' % (pid))
 
-    lung_mask, _, _ = load_itk_image(os.path.join(lung_mask_dir, '%s.mhd' % (pid)))
-    img, origin, spacing = load_itk_image(os.path.join(img_dir, '%s.mhd' % (pid)))
-    nod_mask, _ = nrrd.read(os.path.join(nod_mask_dir, '%s' % (pid)))
-
+    lung_mask, _, _ = load_itk_image('%s.mhd' % (pid_mask))
+    img, origin, spacing = load_itk_image('%s.mhd' % (pid))
     binary_mask1, binary_mask2 = lung_mask == 1, lung_mask == 2
     binary_mask = binary_mask1 + binary_mask2
-
     img = HU2uint8(img)
     seg_img = apply_mask(img, binary_mask1, binary_mask2)
 
     if do_resample:
         print('Resampling...')
         seg_img, resampled_spacing = resample(seg_img, spacing, order=3)
-        seg_nod_mask = np.zeros(seg_img.shape, dtype=np.uint8)
-        for i in range(int(nod_mask.max())):
-            mask = (nod_mask == (i + 1)).astype(np.uint8)
-            mask, _ = resample(mask, spacing, order=3)
-            seg_nod_mask[mask > 0.5] = i + 1
-
     lung_box = get_lung_box(binary_mask, seg_img.shape)
 
     z_min, z_max = lung_box[0]
@@ -664,14 +655,10 @@ def preprocess(params):
     x_min, x_max = lung_box[2]
 
     seg_img = seg_img[z_min:z_max, y_min:y_max, x_min:x_max]
-    seg_nod_mask = seg_nod_mask[z_min:z_max, y_min:y_max, x_min:x_max]
     np.save(os.path.join(save_dir, '%s_origin.npy' % (pid)), origin)
     np.save(os.path.join(save_dir, '%s_spacing.npy' % (pid)), resampled_spacing)
     np.save(os.path.join(save_dir, '%s_ebox_origin.npy' % (pid)), np.array((z_min, y_min, x_min)))
     nrrd.write(os.path.join(save_dir, '%s_clean.nrrd' % (pid)), seg_img)
-    nrrd.write(os.path.join(save_dir, '%s_mask.nrrd' % (pid)), seg_nod_mask)
-
-    print('number of nodules before: %s, afeter preprocessing: %s' % (nod_mask.max(), seg_nod_mask.max()))
     print('Finished %s' % (pid))
     print()
 
@@ -711,16 +698,8 @@ def main():
         os.makedirs(save_dir)
     if not os.path.exists(lung_mask_dir):
         os.makedirs(lung_mask_dir)
+
     """
-    params_lists = []
-    for pid in os.listdir(nod_mask_dir):
-        params_lists.append([pid, lung_mask_dir, nod_mask_dir, img_dir, save_dir, do_resample])
-
-    pool = Pool(processes=10)
-    pool.map(preprocess, params_lists)
-    pool.close()
-    pool.join()
-
     pool = Pool(processes=10)
     pool.map(generate_label, params_lists)
     pool.close()
@@ -729,12 +708,23 @@ def main():
     with open(config['data_txt'], "r") as f:
         lines = f.readlines()
     params_lists = []
+    """
     for line in lines:
         print("lung segmentation:", line)
         line = line.rstrip()
         savedir = '.'.join(line.split("/"))
         get_lung(os.path.join(img_dir, line), os.path.join(lung_mask_dir, savedir))
-
+    """
+    params_lists = []
+    for line in lines:
+        line = line.rstrip()
+        savedir = '.'.join(line.split("/"))
+        pid_mask = os.path.join(lung_mask_dir, savedir)
+        params_lists.append([os.path.join(img_dir, pid_mask, nod_mask_dir, img_dir, save_dir, do_resample])
+    pool = Pool(processes=10)
+    pool.map(preprocess, params_lists)
+    pool.close()
+    pool.join()
 
 
 if __name__=='__main__':
