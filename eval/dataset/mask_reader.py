@@ -20,7 +20,6 @@ class MaskReader(Dataset):
         self.pad_value = cfg['pad_value']
         self.data_dir = data_dir
         self.stride = cfg['stride']
-        self.blacklist = cfg['blacklist']
         self.set_name = set_name
 
         labels = []
@@ -30,9 +29,8 @@ class MaskReader(Dataset):
         elif set_name.endswith('.npy'):
             self.filenames = np.load(set_name)
 
-        if mode != 'test':
-            self.filenames = [f for f in self.filenames if (f not in self.blacklist)]
-            
+
+
         self.sample_bboxes = labels
         if self.mode in ['train', 'val', 'eval']:
             self.bboxes = []
