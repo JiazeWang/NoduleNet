@@ -12,7 +12,7 @@ torch.manual_seed(SEED)
 torch.cuda.manual_seed_all(SEED)
 
 # Preprocessing using preserved HU in dilated part of mask
-BASE = '/research/dept8/jzwang/code/NoduleNet/eval/data' # make sure you have the ending '/'
+BASE = '/research/dept8/jzwang/code/NoduleNet/eval/data/' # make sure you have the ending '/'
 data_config = {
     # put combined LUNA16 .mhd files into one folder
     'data_dir': BASE + 'combined',
