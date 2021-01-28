@@ -13,14 +13,14 @@ from scipy.ndimage.measurements import label
 from config_lidc import config
 
 
-def get_lung(params):
-    filename, output = params
+def get_lung(filename, output):
     reader = sitk.ImageSeriesReader()
     dcm_series = reader.GetGDCMSeriesFileNames(filename)
     reader.SetFileNames(dcm_series)
     img = reader.Execute()
     segmentation = mask.apply(img)
     result_out= sitk.GetImageFromArray(segmentation)
+    output = output+'.mhd'
     sitk.WriteImage(result_out, output)
 
 
@@ -730,12 +730,11 @@ def main():
     for line in lines:
         line = line.rstrip()
         savedir = '.'.join(line.split("/"))
-        params_lists.append([os.path.join(img_dir, line), os.path.join(lung_mask_dir, savedir)])
-    pool = Pool(processes=10)
-    pool.map(get_lung, params_lists)
-    pool.close()
-    pool.join()
+        get_lung(os.path.join(img_dir, line), os.path.join(lung_mask_dir, savedir))
+
 
 
 if __name__=='__main__':
     main()
+
+    /research/dept8/jzwang/code/NoduleNet/eval/data/lidc10/lidc10/LIDC-IDRI-0008/0-30141/3000549.000000-21954
