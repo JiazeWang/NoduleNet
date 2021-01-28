@@ -145,11 +145,11 @@ def eval(net, dataset, save_dir=None):
 
 
             # Clear gpu memory
-            del input, truth_bboxes, truth_labels, truth_masks, mask, image, pred_mask#, gt_mask, gt_img, pred_img, full, score
+            del input#, gt_mask, gt_img, pred_img, full, score
             torch.cuda.empty_cache()
 
         except Exception as e:
-            del input, truth_bboxes, truth_labels, truth_masks, mask, image,
+            del input, image,
             torch.cuda.empty_cache()
             traceback.print_exc()
 
