@@ -32,14 +32,7 @@ class MaskReader(Dataset):
 
         if mode != 'test':
             self.filenames = [f for f in self.filenames if (f not in self.blacklist)]
-        """
-        for fn in self.filenames:
-            l = np.load(os.path.join(data_dir, '%s_bboxes.npy' % fn))
-
-            if np.all(l==0):
-                l=np.array([])
-            labels.append(l)
-        """
+            
         self.sample_bboxes = labels
         if self.mode in ['train', 'val', 'eval']:
             self.bboxes = []
