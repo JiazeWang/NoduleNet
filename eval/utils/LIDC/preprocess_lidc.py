@@ -720,7 +720,7 @@ def main():
         line = line.rstrip()
         savedir = '.'.join(line.split("/"))
         pid_mask = os.path.join(lung_mask_dir, savedir)
-        params_lists.append([os.path.join(img_dir, pid_mask, nod_mask_dir, img_dir, save_dir, do_resample])
+        params_lists.append([os.path.join(img_dir, line), pid_mask, nod_mask_dir, img_dir, save_dir, do_resample])
     pool = Pool(processes=10)
     pool.map(preprocess, params_lists)
     pool.close()
