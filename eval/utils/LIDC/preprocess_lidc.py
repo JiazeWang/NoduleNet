@@ -634,12 +634,12 @@ def auxiliary_segment(image):
 
 
 def preprocess(params):
-    pid, pid_mask, nod_mask_dir, img_dir, save_dir, do_resample = params
+    pid, pid_mask, nod_mask_dir, img_dir, save_dir, do_resample, savename = params
 
     print('Preprocessing %s...' % (pid))
 
     lung_mask, _, _ = load_itk_image('%s.mhd' % (pid_mask))
-    img, origin, spacing = load_itk_image('%s.mhd' % (pid))
+    img, origin, spacing = load_itk_dicom('%s' % (pid))
     binary_mask1, binary_mask2 = lung_mask == 1, lung_mask == 2
     binary_mask = binary_mask1 + binary_mask2
     img = HU2uint8(img)
@@ -655,10 +655,10 @@ def preprocess(params):
     x_min, x_max = lung_box[2]
 
     seg_img = seg_img[z_min:z_max, y_min:y_max, x_min:x_max]
-    np.save(os.path.join(save_dir, '%s_origin.npy' % (pid)), origin)
-    np.save(os.path.join(save_dir, '%s_spacing.npy' % (pid)), resampled_spacing)
-    np.save(os.path.join(save_dir, '%s_ebox_origin.npy' % (pid)), np.array((z_min, y_min, x_min)))
-    nrrd.write(os.path.join(save_dir, '%s_clean.nrrd' % (pid)), seg_img)
+    np.save(os.path.join(save_dir, '%s_origin.npy' % (savename)), origin)
+    np.save(os.path.join(save_dir, '%s_spacing.npy' % (savename)), resampled_spacing)
+    np.save(os.path.join(save_dir, '%s_ebox_origin.npy' % (savename)), np.array((z_min, y_min, x_min)))
+    nrrd.write(os.path.join(save_dir, '%s_clean.nrrd' % (savename)), seg_img)
     print('Finished %s' % (pid))
     print()
 
@@ -718,9 +718,9 @@ def main():
     params_lists = []
     for line in lines:
         line = line.rstrip()
-        savedir = '.'.join(line.split("/"))
-        pid_mask = os.path.join(lung_mask_dir, savedir)
-        params_lists.append([os.path.join(img_dir, line), pid_mask, nod_mask_dir, img_dir, save_dir, do_resample])
+        savename = '.'.join(line.split("/"))
+        pid_mask = os.path.join(lung_mask_dir, savename)
+        params_lists.append([os.path.join(img_dir, line), pid_mask, nod_mask_dir, img_dir, save_dir, do_resample, savename])
     pool = Pool(processes=10)
     pool.map(preprocess, params_lists)
     pool.close()
