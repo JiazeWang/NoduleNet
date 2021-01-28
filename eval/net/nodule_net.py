@@ -342,8 +342,8 @@ class NoduleNet(nn.Module):
 
         # self.rpn_loss = Loss(cfg['num_hard'])
 
-
-    def forward(self, inputs, truth_boxes, truth_labels, truth_masks, masks, split_combiner=None, nzhw=None):
+    #, truth_boxes, truth_labels, truth_masks, masks,
+    def forward(self, inputs, split_combiner=None, nzhw=None):
         features, feat_4 = data_parallel(self.feature_net, (inputs)); #print('fs[-1] ', fs[-1].shape)
         fs = features[-1]
 
