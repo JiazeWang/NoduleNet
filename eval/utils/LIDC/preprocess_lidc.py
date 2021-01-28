@@ -634,7 +634,7 @@ def auxiliary_segment(image):
 
 
 def preprocess(params):
-    pid, lung_mask_dir, nod_mask_dir, img_dir, save_dir, do_resample = params
+    pid, pid_mask, nod_mask_dir, img_dir, save_dir, do_resample = params
 
     print('Preprocessing %s...' % (pid))
 
