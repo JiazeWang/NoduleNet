@@ -700,10 +700,10 @@ def main():
 
     n_consensus = 3
     do_resample = True
+    lung_mask_dir = config['lung_mask_dir']
     nod_mask_dir = os.path.join(config['mask_save_dir'], str(n_consensus))
     img_dir = config['data_dir']
     save_dir = os.path.join(config['preprocessed_data_dir'])
-
     print('nod mask dir', nod_mask_dir)
     print('save dir ', save_dir)
 
