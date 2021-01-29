@@ -24,6 +24,7 @@ from dataset.mask_reader import MaskReader
 from config_lidc import config
 from utils.util import onehot2multi_mask, normalize, pad2factor, load_dicom_image, crop_boxes2mask_single, npy2submission
 import pandas as pd
+import json
 from evaluationScript.noduleCADEvaluationLUNA16 import noduleCADEvaluation
 
 plt.rcParams['figure.figsize'] = (24, 16)
@@ -78,6 +79,43 @@ def main():
     else:
         logging.error('Mode %s is not supported' % (args.mode))
 
+def convert_json(input, output, thresholds=0.5):
+    with open(input, "r") as f:
+        lines = f.readlines()
+    NoduleClass, NoduleScore, NoduleCoordinates, NoduleDiameter= [], [], [], []
+    nudule = {}
+    num = 0
+    result = []
+    record = lines[1].split(",")[0]
+    for line in lines[1:]:
+        nodule_dic = {}
+        line = line.rstrip()
+        line = line.split(",")
+        if line[0] == record and num+1<len(lines[1:]) :
+            NoduleScore.append(line[-1])
+            if float(line[-1])> thresholds:
+                NoduleClass.append(1)
+            else:
+                NoduleClass.append(0)
+            NoduleCoordinates.append([line[1], line[2], line[3]])
+            NoduleDiameter.append(line[4])
+        else:
+            nudule = {}
+            patient = {"patientName": record, \
+                       "nodules": nudule,}
+            nudule["NoduleScore"] = NoduleScore
+            nudule["NoduleClass"] = NoduleClass
+            nudule["NoduleCoordinates"] = NoduleCoordinates
+            nudule["NoduleDiameter"] = NoduleDiameter
+            NoduleClass, NoduleScore, NoduleCoordinates, NoduleDiameter = [], [], [], []
+            NoduleScore.append(line[-1])
+            NoduleCoordinates.append([line[1], line[2], line[3]])
+            NoduleDiameter.append(line[4])
+            record = line[0]
+            result.append(patient)
+        num = num + 1
+    with open(output,'w',encoding='utf-8') as f:
+        f.write(json.dumps(result,indent=2))
 
 def eval(net, dataset, save_dir=None):
     net.set_mode('eval')
@@ -172,6 +210,7 @@ def eval(net, dataset, save_dir=None):
     ensemble_submission_path = os.path.join(eval_dir, 'submission.csv')
     df = pd.DataFrame(ensemble_res, columns=col_names)
     df.to_csv(ensemble_submission_path, index=False)
+    convert_json(ensemble_submission_path, "result.json")
 
     print
 
