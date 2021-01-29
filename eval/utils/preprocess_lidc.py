@@ -1,6 +1,6 @@
 import sys
 sys.path.append('./')
-sys.path.append('../../')
+sys.path.append('../')
 import numpy as np
 import scipy.ndimage
 from skimage import measure, morphology
