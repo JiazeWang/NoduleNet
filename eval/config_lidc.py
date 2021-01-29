@@ -19,10 +19,6 @@ data_config = {
     'data_txt': BASE + 'filedir.txt',
     # directory for putting all preprocessed results for training to this path
     'preprocessed_data_dir': BASE + 'preprocessed_test/',
-
-    # put annotation downloaded from LIDC to this path
-    'annos_dir': BASE + 'tcia-lidc-xml',
-
     # put lung mask downloaded from LUNA16 to this path
     'lung_mask_dir': BASE + 'seg-lungs/',
 
@@ -30,7 +26,8 @@ data_config = {
     'ctr_arr_save_dir': BASE + 'annotation/mask_test',
     'mask_save_dir': BASE + 'masks_test',
     'mask_exclude_save_dir': BASE + 'masks_exclude_test',
-
+    # put annotation downloaded from LIDC to this path
+    'annos_dir': BASE + 'tcia-lidc-xml',
 
     'roi_names': ['nodule'],
     'crop_size': [128, 128, 128],
