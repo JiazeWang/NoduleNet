@@ -1,7 +1,7 @@
 import sys
 import numpy as np
 import torch
-from config import config
+from config_lidc import config
 import pydicom as dicom
 import numpy as np
 from scipy.sparse import csc_matrix
@@ -47,7 +47,7 @@ class Logger(object):
         #you might want to specify some extra behavior here.
         pass
 
-    
+
 def worldToVoxelCoord(worldCoord, origin, spacing):
     stretchedVoxelCoord = np.absolute(worldCoord - origin)
     voxelCoord = stretchedVoxelCoord / spacing
@@ -156,7 +156,7 @@ def py_nms(dets, thresh):
         if dets.is_cuda:
             dets = dets.cpu()
         dets = dets.data.numpy()
-        
+
     z = dets[:, 1]
     y = dets[:, 2]
     x = dets[:, 3]
@@ -217,11 +217,11 @@ def py_box_overlap(boxes1, boxes2):
         overlap[i] = intersect / (areas1[i] + areas2 - intersect)
 
     return overlap
-    
-    
+
+
 def center_box_to_coord_box(bboxes):
     """
-    Convert bounding box using center of rectangle and side lengths representation to 
+    Convert bounding box using center of rectangle and side lengths representation to
     bounding box using coordinate representation
     [center_z, center_y, center_x, D, H, W] -> [z_start, y_start, x_start, z_end, y_end, x_end]
 
@@ -240,7 +240,7 @@ def center_box_to_coord_box(bboxes):
 
 def coord_box_to_center_box(bboxes):
     """
-    Convert bounding box using coordinate representation to 
+    Convert bounding box using coordinate representation to
     bounding box using center of rectangle and side lengths representation
     [z_start, y_start, x_start, z_end, y_end, x_end] -> [center_z, center_y, center_x, D, H, W]
 
@@ -260,7 +260,7 @@ def coord_box_to_center_box(bboxes):
 def ext2factor(bboxes, factor=8):
     """
     Given center box representation which is [z_start, y_start, x_start, z_end, y_end, x_end],
-    return closest point which can be divided by 8 
+    return closest point which can be divided by 8
     """
     bboxes[:, :3] = bboxes[:, :3] // factor * factor
     bboxes[:, 3:] = bboxes[:, 3:] // factor * factor + (bboxes[:, 3:] % factor != 0).astype(np.int32) * factor
@@ -305,11 +305,11 @@ def detections2mask(detections, masks, img_reso, num_class=28):
 
         m = masks[i]
         D_c, H_c, W_c = m.shape
-        zoomed_crop = zoom(m, 
-                    (float(z_end - z_start) / D_c, float(y_end - y_start) / H_c, float(x_end - x_start) / W_c), 
+        zoomed_crop = zoom(m,
+                    (float(z_end - z_start) / D_c, float(y_end - y_start) / H_c, float(x_end - x_start) / W_c),
                     order=2)
         mask[cat - 1][z_start:z_end, y_start:y_end, x_start:x_end] = (zoomed_crop > 0.5).astype(np.uint8)
-    
+
     return mask
 
 
@@ -331,7 +331,7 @@ def crop_boxes2mask(crop_boxes, masks, img_reso, num_class=28):
         m = masks[i]
         D_c, H_c, W_c = m.shape
         mask[cat - 1][z_start:z_end, y_start:y_end, x_start:x_end] = (m > 0.5).astype(np.uint8)
-    
+
     return mask
 
 def crop_boxes2mask_single(crop_boxes, masks, img_reso):
@@ -352,7 +352,7 @@ def crop_boxes2mask_single(crop_boxes, masks, img_reso):
         m = masks[i]
         D_c, H_c, W_c = m.shape
         mask[z_start:z_end, y_start:y_end, x_start:x_end][m > 0.5] = i + 1
-    
+
     return mask
 
 
@@ -363,7 +363,7 @@ def masks2bboxes_masks(masks, border):
     masks: [num_class, D, H, W]
     return: [z, y, x, class]
     """
-    
+
     num_class, D, H, W = masks.shape
     bboxes = []
     truth_masks = []
@@ -371,12 +371,12 @@ def masks2bboxes_masks(masks, border):
         mask = masks[i]
         if np.any(mask):
             zz, yy, xx = np.where(mask)
-            bboxes.append([(zz.max() + zz.min()) / 2., 
-                           (yy.max() + yy.min()) / 2., 
-                           (xx.max() + xx.min()) / 2., 
-                           zz.max() - zz.min() + 1 + border / 2, 
-                           yy.max() - yy.min() + 1 + border, 
-                           xx.max() - xx.min() + 1 + border, 
+            bboxes.append([(zz.max() + zz.min()) / 2.,
+                           (yy.max() + yy.min()) / 2.,
+                           (xx.max() + xx.min()) / 2.,
+                           zz.max() - zz.min() + 1 + border / 2,
+                           yy.max() - yy.min() + 1 + border,
+                           xx.max() - xx.min() + 1 + border,
                            i + 1])
             truth_masks.append(mask)
 
@@ -423,9 +423,9 @@ def extend_bbox(bboxes, extend_border):
     original_bbox[:,-1]+=extend_border
     D = np.array([original_bbox[:,-1]]).reshape(-1,1)
     return_bboxes = np.concatenate((original_bbox,D,D),axis=1)
-    
+
     return return_bboxes
-    
+
 
 
 def bboxes_masks2masks(coord_boxes, masks, labels, reso, num_class=len(config['roi_names'])):
@@ -450,12 +450,12 @@ def bboxes_masks2masks(coord_boxes, masks, labels, reso, num_class=len(config['r
 def get_contours_from_masks(masks):
     """
     Generate contours from masks by going through each organ slice by slice
-    
+
     masks: [num_class, D, H, W]
     return: contours of shape [num_class, D, H, W] for each organ
     """
     contours = np.zeros(masks.shape, dtype=np.uint8)
-    
+
     # Iterate all organs/channels
     for i, mask in enumerate(masks):
         # For each organ, Iterate all slices
@@ -470,7 +470,7 @@ def get_contours_from_masks(masks):
                     c[point[0], point[1]] = 1
 
             contours[i][j] = c
-            
+
     return contours
 
 
@@ -478,7 +478,7 @@ def merge_contours(contours):
     """
     Merge contours for each organ into one ndimage, overlapped pixels will
     be override by the later class value
-    
+
     contours: [num_class, D, H, W]
     return: merged contour of shape [D, H, W]
     """
@@ -486,7 +486,7 @@ def merge_contours(contours):
     merged_contours = np.zeros((D, H, W), dtype=np.uint8)
     for i in range(num_class):
         merged_contours[contours[i] > 0] = i + 1
-    
+
     return merged_contours
 
 
@@ -494,7 +494,7 @@ def merge_masks(masks):
     """
     Merge masks for each organ into one ndimage, overlapped pixels will
     be override by the later class value
-    
+
     contours: [num_class, D, H, W]
     return: merged contour of shape [D, H, W]
     """
@@ -502,7 +502,7 @@ def merge_masks(masks):
     merged_masks = np.zeros((D, H, W), dtype=np.uint8)
     for i in range(num_class):
         merged_masks[masks[i] > 0] = i + 1
-    
+
     return merged_masks
 
 
@@ -587,7 +587,7 @@ def normalize(img):
 
     # 0 ~ 1
     img = (img - minimum) / max(1, (maximum - minimum))
-    
+
     # -1 ~ 1
     img = img * 2 - 1
     return img
