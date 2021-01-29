@@ -24,7 +24,6 @@ from dataset.mask_reader import MaskReader
 from config_lidc import config
 from utils.util import onehot2multi_mask, normalize, pad2factor, load_dicom_image, crop_boxes2mask_single, npy2submission
 import pandas as pd
-from evaluationScript.noduleCADEvaluationLUNA16 import noduleCADEvaluation
 
 plt.rcParams['figure.figsize'] = (24, 16)
 plt.switch_backend('agg')
