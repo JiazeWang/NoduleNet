@@ -18,7 +18,7 @@ data_config = {
     'data_txt': BASE + 'filedir.txt',
     'preprocessed_data_dir': BASE + 'preprocessed_test/',
     'lung_mask_dir': BASE + 'seg-lungs/',
-
+    'mask_save_dir': BASE + 'masks_test/',
 
     'roi_names': ['nodule'],
     'crop_size': [128, 128, 128],
