@@ -699,22 +699,9 @@ def main():
     if not os.path.exists(lung_mask_dir):
         os.makedirs(lung_mask_dir)
 
-    """
-    pool = Pool(processes=10)
-    pool.map(generate_label, params_lists)
-    pool.close()
-    pool.join()
-    """
     with open(config['data_txt'], "r") as f:
         lines = f.readlines()
-    params_lists = []
-    """
-    for line in lines:
-        print("lung segmentation:", line)
-        line = line.rstrip()
-        savedir = '.'.join(line.split("/"))
-        get_lung(os.path.join(img_dir, line), os.path.join(lung_mask_dir, savedir))
-    """
+
     params_lists = []
     for line in lines:
         line = line.rstrip()

@@ -22,8 +22,6 @@ from dataset.collate import train_collate, test_collate, eval_collate
 from dataset.bbox_reader import BboxReader
 from dataset.mask_reader import MaskReader
 from config_lidc import config
-from utils.visualize import draw_gt, draw_pred, generate_image_anim
-from utils.util import dice_score_seperate, get_contours_from_masks, merge_contours, hausdorff_distance
 from utils.util import onehot2multi_mask, normalize, pad2factor, load_dicom_image, crop_boxes2mask_single, npy2submission
 import pandas as pd
 from evaluationScript.noduleCADEvaluationLUNA16 import noduleCADEvaluation
@@ -171,16 +169,7 @@ def eval(net, dataset, save_dir=None):
     ensemble_res = np.concatenate(ensemble_res, axis=0)
     col_names = ['seriesuid','coordX','coordY','coordZ','diameter_mm', 'probability']
     eval_dir = config['data_dir']
-    #rpn_submission_path = os.path.join(eval_dir, 'submission_rpn.csv')
-    #rcnn_submission_path = os.path.join(eval_dir, 'submission_rcnn.csv')
     ensemble_submission_path = os.path.join(eval_dir, 'submission.csv')
-
-    #df = pd.DataFrame(rpn_res, columns=col_names)
-    #df.to_csv(rpn_submission_path, index=False)
-
-    #df = pd.DataFrame(rcnn_res, columns=col_names)
-    #df.to_csv(rcnn_submission_path, index=False)
-
     df = pd.DataFrame(ensemble_res, columns=col_names)
     df.to_csv(ensemble_submission_path, index=False)
 
