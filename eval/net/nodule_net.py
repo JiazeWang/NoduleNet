@@ -2,7 +2,7 @@ import sys
 
 from net.layer import *
 
-from config import net_config as config
+from config_lidc import net_config as config
 import copy
 from torch.nn.parallel.data_parallel import data_parallel
 import time
