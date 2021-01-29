@@ -684,7 +684,6 @@ def generate_label(params):
     np.save(os.path.join(save_dir, '%s_bboxes.npy' % (pid)), bboxes)
 
 def main():
-
     n_consensus = 3
     do_resample = True
     lung_mask_dir = config['lung_mask_dir']
