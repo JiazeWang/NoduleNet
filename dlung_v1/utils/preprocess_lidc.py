@@ -700,6 +700,13 @@ def main():
 
     with open(config['data_txt'], "r") as f:
         lines = f.readlines()
+    params_lists = []
+    
+    for line in lines:
+        print("lung segmentation:", line)
+        line = line.rstrip()
+        savedir = '.'.join(line.split("/"))
+        get_lung(os.path.join(img_dir, line), os.path.join(lung_mask_dir, savedir))
 
     params_lists = []
     for line in lines:
