@@ -52,9 +52,6 @@ parser.add_argument("--test-set-name", type=str, default=config['test_set_name']
 def main():
     logging.basicConfig(format='[%(levelname)s][%(asctime)s] %(message)s', level=logging.INFO)
     args = parser.parse_args()
-    # params_eye_L = np.load('weights/params_eye_L.npy').item()
-    # params_eye_R = np.load('weights/params_eye_R.npy').item()
-    # params_brain_stem = np.load('weights/params_brain_stem.npy').item()
     if args.mode == 'eval':
         data_dir = config['preprocessed_data_dir']
         test_set_name = args.test_set_name
@@ -67,7 +64,6 @@ def main():
         if initial_checkpoint:
             print('[Loading model from %s]' % initial_checkpoint)
             checkpoint = torch.load(initial_checkpoint)
-            # out_dir = checkpoint['out_dir']
             epoch = checkpoint['epoch']
             net.load_state_dict(checkpoint['state_dict'])
         else:
@@ -188,40 +184,7 @@ def eval(net, dataset, save_dir=None):
     df = pd.DataFrame(ensemble_res, columns=col_names)
     df.to_csv(ensemble_submission_path, index=False)
 
-    # Start evaluating
-    """
-    if not os.path.exists(os.path.join(eval_dir, 'rpn')):
-        os.makedirs(os.path.join(eval_dir, 'rpn'))
-    if not os.path.exists(os.path.join(eval_dir, 'rcnn')):
-        os.makedirs(os.path.join(eval_dir, 'rcnn'))
-    if not os.path.exists(os.path.join(eval_dir, 'ensemble')):
-        os.makedirs(os.path.join(eval_dir, 'ensemble'))
-
-    noduleCADEvaluation('evaluationScript/annotations/LIDC/3_annotation.csv',
-    'evaluationScript/annotations/LIDC/3_annotation_excluded.csv',
-    dataset.set_name, rpn_submission_path, os.path.join(eval_dir, 'rpn'))
-
-    noduleCADEvaluation('evaluationScript/annotations/LIDC/3_annotation.csv',
-    'evaluationScript/annotations/LIDC/3_annotation_excluded.csv',
-    dataset.set_name, rcnn_submission_path, os.path.join(eval_dir, 'rcnn'))
-
-    noduleCADEvaluation('evaluationScript/annotations/LIDC/3_annotation.csv',
-    'evaluationScript/annotations/LIDC/3_annotation_excluded.csv',
-    dataset.set_name, ensemble_submission_path, os.path.join(eval_dir, 'ensemble'))
-    """
     print
-
-
-def eval_single(net, input):
-    with torch.no_grad():
-        input = input.cuda().unsqueeze(0)
-        logits = net.forward(input)
-        logits = logits[0]
-
-    masks = logits.cpu().data.numpy()
-    masks = (masks > 0.5).astype(np.int32)
-    return masks
-
 
 if __name__ == '__main__':
     main()
