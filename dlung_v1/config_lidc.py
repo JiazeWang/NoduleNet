@@ -14,20 +14,10 @@ torch.cuda.manual_seed_all(SEED)
 # Preprocessing using preserved HU in dilated part of mask
 BASE = '/research/dept8/jzwang/code/NoduleNet/dlung_v1/data/' # make sure you have the ending '/'
 data_config = {
-    # put combined LUNA16 .mhd files into one folder
     'data_dir': BASE,
     'data_txt': BASE + 'filedir.txt',
-    # directory for putting all preprocessed results for training to this path
     'preprocessed_data_dir': BASE + 'preprocessed_test/',
-
-    # put annotation downloaded from LIDC to this path
-    'annos_dir': BASE + 'tcia-lidc-xml',
-    # put lung mask downloaded from LUNA16 to this path
     'lung_mask_dir': BASE + 'seg-lungs/',
-    # Directory for saving intermediate results
-    'ctr_arr_save_dir': BASE + 'annotation/mask_test',
-    'mask_save_dir': BASE + 'masks_test',
-    'mask_exclude_save_dir': BASE + 'masks_exclude_test',
 
 
     'roi_names': ['nodule'],
