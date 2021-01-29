@@ -111,40 +111,12 @@ def lr_shedule(epoch, init_lr=0.01, total=200):
         lr = 0.01 * init_lr
     return lr
 
-train_config = {
-    'net': 'NoduleNet',
-    'batch_size': 16,
 
-    'lr_schedule': lr_shedule,
-    'optimizer': 'SGD',
-    'momentum': 0.9,
-    'weight_decay': 1e-4,
-
-    'epochs': 100,
-    'epoch_save': 5,
-    'epoch_rcnn': 65,
-    'epoch_mask': 100,
-    'num_workers': 8,
-
-    'train_set_list': ['split/3_train.csv'],
-    'val_set_list': ['split/3_val.csv'],
-    'test_set_name': BASE + 'eval.csv',
-    'label_types': ['mask'],
-    'DATA_DIR': data_config['preprocessed_data_dir'],
-    'ROOT_DIR': os.getcwd()
-}
-
-if train_config['optimizer'] == 'SGD':
-    train_config['init_lr'] = 0.01
-elif train_config['optimizer'] == 'Adam':
-    train_config['init_lr'] = 0.001
-elif train_config['optimizer'] == 'RMSprop':
-    train_config['init_lr'] = 2e-3
 
 
 train_config['RESULTS_DIR'] = os.path.join(train_config['ROOT_DIR'], 'results')
 train_config['out_dir'] = os.path.join(BASE, 'eval_result')
-train_config['initial_checkpoint'] = 'dlung_v1.ckpt'
+train_config['initial_checkpoint'] = 'dlung_v0.ckpt'
 
 
 config = dict(data_config, **net_config)
