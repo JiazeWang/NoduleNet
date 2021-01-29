@@ -79,7 +79,7 @@ def main():
     else:
         logging.error('Mode %s is not supported' % (args.mode))
 
-def convert_json(input, output, thresholds=0.5):
+def convert_json(input, output, thresholds=0.6):
     with open(input, "r") as f:
         lines = f.readlines()
     NoduleClass, NoduleScore, NoduleCoordinates, NoduleDiameter= [], [], [], []
@@ -131,7 +131,6 @@ def eval(net, dataset, save_dir=None):
         try:
             D, H, W = image.shape
             pid = dataset.filenames[i]
-
             print('[%d] Predicting %s' % (i, pid), image.shape)
 
             with torch.no_grad():
