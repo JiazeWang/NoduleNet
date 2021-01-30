@@ -15,6 +15,7 @@ torch.cuda.manual_seed_all(SEED)
 BASE = '/research/dept8/jzwang/dataset/LUNA16/' # make sure you have the ending '/'
 data_config = {
     # put combined LUNA16 .mhd files into one folder
+    #/data/ssd/public/jzwang/data/LIDC-IDRI
     'data_dir': BASE + 'combined',
 
     # directory for putting all preprocessed results for training to this path
@@ -24,7 +25,7 @@ data_config = {
     'annos_dir': BASE + 'tcia-lidc-xml',
 
     # put lung mask downloaded from LUNA16 to this path
-    'lung_mask_dir': BASE + 'seg-lungs-LUNA16/',
+    'lung_mask_dir': BASE + 'seg-lungs-lidc/',
 
     # Directory for saving intermediate results
     'ctr_arr_save_dir': BASE + 'annotation/mask_test',
@@ -129,7 +130,7 @@ train_config = {
     'train_set_list': ['split/3_train.csv'],
     'val_set_list': ['split/3_val.csv'],
     'test_set_name': 'split/3_val.csv',
-    'label_types': ['mask'],
+    'label_types': ['bbox'],
     'DATA_DIR': data_config['preprocessed_data_dir'],
     'ROOT_DIR': os.getcwd()
 }
@@ -144,8 +145,8 @@ elif train_config['optimizer'] == 'RMSprop':
 
 train_config['RESULTS_DIR'] = os.path.join(train_config['ROOT_DIR'], 'results')
 train_config['out_dir'] = os.path.join(train_config['RESULTS_DIR'], 'cross_val_test')
-#train_config['initial_checkpoint'] = None #train_config['out_dir'] + '/model/027.ckpt'
-train_config['initial_checkpoint'] = '/research/dept8/jzwang/code/NoduleNet/results/cross_val_test/model/200.ckpt'
+train_config['initial_checkpoint'] = None #train_config['out_dir'] + '/model/027.ckpt'
+#train_config['initial_checkpoint'] = '/research/dept8/jzwang/code/NoduleNet/results/cross_val_test/model/200.ckpt'
 
 
 config = dict(data_config, **net_config)
