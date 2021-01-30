@@ -25,7 +25,7 @@ data_config = {
     'annos_dir': BASE + 'tcia-lidc-xml',
 
     # put lung mask downloaded from LUNA16 to this path
-    'lung_mask_dir': BASE + 'seg-lungs-lidc/',
+    'lung_mask_dir': BASE + 'seg-lungs-LUNA16/',
 
     # Directory for saving intermediate results
     'ctr_arr_save_dir': BASE + 'annotation/mask_test',
