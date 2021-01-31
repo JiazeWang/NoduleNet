@@ -656,7 +656,7 @@ def process_space(params):
     pid, lung_mask_dir, nod_mask_dir, img_dir, save_dir, do_resample = params
     img, origin, spacing = load_itk_image(os.path.join(img_dir, '%s.mhd' % (pid)))
     print('Preprocessing %s...' % (pid))
-    np.save(os.path.join(save_dir, '%s_spacing_origin.npy' % (savename)), spacing)
+    np.save(os.path.join(save_dir, '%s_spacing_origin.npy' % (pid)), spacing)
 
 def generate_label(params):
     pid, lung_mask_dir, nod_mask_dir, img_dir, save_dir, do_resample = params
