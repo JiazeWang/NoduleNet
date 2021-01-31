@@ -241,7 +241,7 @@ def eval(net, dataset, save_dir=None):
 
     noduleCADEvaluation('evaluationScript/annotations/LIDC/annotations_origin.csv',
     'evaluationScript/annotations/LIDC/3_annotation_excluded.csv',
-    dataset.set_name, ensemble_submission_path, os.path.join(eval_dir, 'eval_origin'))
+    dataset.set_name, ensemble_submission_path_v1, os.path.join(eval_dir, 'eval_origin'))
     print
 
 
