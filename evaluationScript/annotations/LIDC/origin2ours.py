@@ -20,7 +20,7 @@ def convert_csv_2_origin(filename, outputname):
             xyz = (xyz-origin)/spacing
             new.append([result[i][0], xyz[0], xyz[1], xyz[2], size])
     #new = np.concatenate(new, axis=0)
-    col_names = ['seriesuid','coordX','coordY','coordZ','diameter_mm', 'probability']
+    col_names = ['seriesuid','coordX','coordY','coordZ','diameter_mm']
     submission_path = outputname
     df = pd.DataFrame(new, columns=col_names)
     df.to_csv(submission_path, index=False)
