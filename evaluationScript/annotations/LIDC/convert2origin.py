@@ -15,6 +15,9 @@ def convert_csv_2_origin(filename, outputname):
         origin = os.path.join("/research/dept8/jzwang/dataset/LUNA16/preprocessed_test", '%s_origin.npy' % (result[i][0]))
         spacing = np.array(list(reversed(spacing)))
         origin = np.array(list(reversed(origin)))
+        print("xyz.shape", xyz.shape)
+        print("spacing.shape", spacing.shape)
+        print("origin.shape", origin.shape)
         xyz = xyz*spacing+origin
         new.append([result[i][0], xyz[0], xyz[1], xyz[2], size, pro])
     #new = np.concatenate(new, axis=0)
