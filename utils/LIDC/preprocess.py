@@ -652,6 +652,12 @@ def preprocess(params):
     print()
 
 
+def process_space(params):
+    pid, lung_mask_dir, nod_mask_dir, img_dir, save_dir, do_resample = params
+    img, origin, spacing = load_itk_image(os.path.join(img_dir, '%s.mhd' % (pid)))
+    print('Preprocessing %s...' % (pid))
+    np.save(os.path.join(save_dir, '%s_spacing_origin.npy' % (savename)), spacing)
+
 def generate_label(params):
     pid, lung_mask_dir, nod_mask_dir, img_dir, save_dir, do_resample = params
     masks, _ = nrrd.read(os.path.join(save_dir, '%s_mask.nrrd' % (pid)))
@@ -690,13 +696,13 @@ def main():
         params_lists.append([pid, lung_mask_dir, nod_mask_dir, img_dir, save_dir, do_resample])
 
     pool = Pool(processes=10)
-    pool.map(preprocess, params_lists)
-
+    #pool.map(preprocess, params_lists)
+    pool.map(process_space, params_lists)
     pool.close()
     pool.join()
 
     pool = Pool(processes=10)
-    pool.map(generate_label, params_lists)
+    #pool.map(generate_label, params_lists)
 
     pool.close()
     pool.join()
