@@ -657,6 +657,7 @@ def preprocess(params):
     seg_img = seg_img[z_min:z_max, y_min:y_max, x_min:x_max]
     np.save(os.path.join(save_dir, '%s_origin.npy' % (savename)), origin)
     np.save(os.path.join(save_dir, '%s_spacing.npy' % (savename)), resampled_spacing)
+    np.save(os.path.join(save_dir, '%s_spacing_origin.npy' % (savename)), spacing)
     np.save(os.path.join(save_dir, '%s_ebox_origin.npy' % (savename)), np.array((z_min, y_min, x_min)))
     nrrd.write(os.path.join(save_dir, '%s_clean.nrrd' % (savename)), seg_img)
     print('Finished %s' % (pid))
@@ -701,7 +702,7 @@ def main():
     with open(config['data_txt'], "r") as f:
         lines = f.readlines()
     params_lists = []
-    
+
     for line in lines:
         print("lung segmentation:", line)
         line = line.rstrip()

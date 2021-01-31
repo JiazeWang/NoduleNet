@@ -117,6 +117,27 @@ def convert_json(input, output, thresholds=0.6):
     with open(output,'w',encoding='utf-8') as f:
         f.write(json.dumps(result,indent=2))
 
+def convert_csv_2_origin(filename, outputname):
+    CSV_FILE_PATH = filename
+    df = pd.read_csv(CSV_FILE_PATH)
+    result = df.values.tolist()
+    new = []
+    for i in range(0, len(result)):
+        xyz = np.array([result[i][1], result[i][2], result[i][3]])
+        size = result[i][4]
+        pro = result[i][5]
+        xyz = xyz-[100,100,100]
+        spacing = os.path.join(config['preprocessed_data_dir'], '%s_spacing_origin.npy' % (result[i][0]))
+        origin = os.path.join(config['preprocessed_data_dir'], '%s_origin.npy' % (result[i][0]))
+        spacing = np.array(list(reversed(spacing)))
+        origin = np.array(list(reversed(origin)))
+        new.append([result[i][0], xyz[0], xyz[1], xyz[2], size, pro])
+    #new = np.concatenate(new, axis=0)
+    col_names = ['seriesuid','coordX','coordY','coordZ','diameter_mm', 'probability']
+    submission_path = outputname
+    df = pd.DataFrame(new, columns=col_names)
+    df.to_csv(submission_path, index=False)
+
 def eval(net, dataset, save_dir=None):
     net.set_mode('eval')
     net.use_mask = False
@@ -209,7 +230,9 @@ def eval(net, dataset, save_dir=None):
     ensemble_submission_path = os.path.join(eval_dir, 'submission.csv')
     df = pd.DataFrame(ensemble_res, columns=col_names)
     df.to_csv(ensemble_submission_path, index=False)
-    convert_json(ensemble_submission_path, "result.json")
+    ensemble_submission_path_v1 = os.path.join(eval_dir, 'submission_v1.csv')
+    convert_csv_2_origin(ensemble_submission_path, ensemble_submission_path_v1)
+    convert_json(ensemble_submission_path_v1, "result.json")
 
     print
 
