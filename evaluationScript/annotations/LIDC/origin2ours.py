@@ -12,7 +12,7 @@ def convert_csv_2_origin(filename, outputname):
         size = result[i][4]
         spacing = os.path.join("/research/dept8/jzwang/dataset/LUNA16/preprocessed_test", '%s_spacing_origin.npy' % (result[i][0]))
         origin = os.path.join("/research/dept8/jzwang/dataset/LUNA16/preprocessed_test", '%s_origin.npy' % (result[i][0]))
-        if os.path.exists(spacing)
+        if os.path.exists(spacing):
             spacing = np.load(spacing)
             origin = np.load(origin)
             spacing = np.array(list(reversed(spacing)))
