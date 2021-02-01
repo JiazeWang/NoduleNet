@@ -79,7 +79,7 @@ def main():
     else:
         logging.error('Mode %s is not supported' % (args.mode))
 
-def convert_json(input, output, thresholds=0.6):
+def convert_json(input, output, thresholds=0.5):
     with open(input, "r") as f:
         lines = f.readlines()
     NoduleClass, NoduleScore, NoduleCoordinates, NoduleDiameter= [], [], [], []
@@ -126,7 +126,7 @@ def convert_csv_2_origin(filename, outputname):
         xyz = np.array([result[i][1], result[i][2], result[i][3]])
         size = result[i][4]
         pro = result[i][5]
-        xyz = xyz-[100,100,100]
+        xyz = xyz
         spacing = os.path.join(config['preprocessed_data_dir'], '%s_spacing_origin.npy' % (result[i][0]))
         origin = os.path.join(config['preprocessed_data_dir'], '%s_origin.npy' % (result[i][0]))
         spacing = np.array(list(reversed(spacing)))

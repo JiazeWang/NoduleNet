@@ -19,6 +19,7 @@ data_config = {
     'preprocessed_data_dir': BASE + 'preprocessed_test/',
     'lung_mask_dir': BASE + 'seg-lungs/',
     'mask_save_dir': BASE + 'masks_test/',
+    'mhd_dir':BASE + 'mhd/',
 
     'roi_names': ['nodule'],
     'crop_size': [128, 128, 128],
