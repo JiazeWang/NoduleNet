@@ -634,7 +634,7 @@ def auxiliary_segment(image):
     return sitk.GetArrayFromImage(final_mask)
 
 def load_itk_series(filedir):
-    img_dir = config["img_dir"]
+    img_dir = config['data_dir']
     filename = os.path.join(img_dir, filedir)
     reader = sitk.ImageSeriesReader()
     seriesIDs = reader.GetGDCMSeriesIDs(filename)
@@ -660,7 +660,7 @@ def preprocess(params):
     print('Preprocessing %s...' % (pid))
 
     lung_mask, _, _ = load_itk_image('%s.mhd' % (pid_mask))
-    img, origin, spacing = load_itk_dicom('%s' % (pid))
+    img, origin, spacing = load_itk_image('%s' % (pid))
     binary_mask1, binary_mask2 = lung_mask == 1, lung_mask == 2
     binary_mask = binary_mask1 + binary_mask2
     img = HU2uint8(img)
@@ -705,6 +705,13 @@ def generate_label(params):
 
     np.save(os.path.join(save_dir, '%s_bboxes.npy' % (pid)), bboxes)
 
+def get_lung_mhd(filename, output):
+    img = sitk.ReadImage(filename)
+    segmentation = mask.apply(img)
+    result_out= sitk.GetImageFromArray(segmentation)
+    output = output+'.mhd'
+    sitk.WriteImage(result_out, output)
+
 def main():
     n_consensus = 3
     do_resample = True
@@ -724,20 +731,35 @@ def main():
         os.makedirs(mhd_dir)
     with open(config['data_txt'], "r") as f:
         lines = f.readlines()
+    record_series = []
+    record = []
     params_lists = []
-
     for line in lines:
+        line = line.rstrip()
+        savedir = '_'.join(line.split("/"))
+        params_lists.append(line)
+    pool = Pool(processes=10)
+    result = pool.map(load_itk_series, params_lists)
+    for item in result:
+        record_series.append(item)
+    pool.close()
+    pool.join()
+    print(record_series)
+    with open("record_folder_series.txt",'w') as f:
+        f.write('\n'.join(record_series))
+
+    for line in record_name:
         print("lung segmentation:", line)
         line = line.rstrip()
-        savedir = '.'.join(line.split("/"))
-        get_lung(os.path.join(img_dir, line), os.path.join(lung_mask_dir, savedir))
+        savedir = line
+        get_lung_mhd(os.path.join(mhd_dir, line+'.mhd'), os.path.join(lung_mask_dir, line))
 
     params_lists = []
     for line in lines:
         line = line.rstrip()
-        savename = '.'.join(line.split("/"))
+        savename = line
         pid_mask = os.path.join(lung_mask_dir, savename)
-        params_lists.append([os.path.join(img_dir, line), pid_mask, nod_mask_dir, img_dir, save_dir, do_resample, savename])
+        params_lists.append([os.path.join(mhd_dir, line+'.mhd'), pid_mask, nod_mask_dir, img_dir, save_dir, do_resample, savename])
     pool = Pool(processes=10)
     pool.map(preprocess, params_lists)
     pool.close()
