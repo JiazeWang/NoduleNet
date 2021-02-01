@@ -31,7 +31,7 @@ from evaluationScript.noduleCADEvaluationLUNA16 import noduleCADEvaluation
 plt.rcParams['figure.figsize'] = (24, 16)
 plt.switch_backend('agg')
 this_module = sys.modules[__name__]
-os.environ['CUDA_VISIBLE_DEVICES'] = '0,1,2,3'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0,1'
 
 
 parser = argparse.ArgumentParser()
@@ -61,7 +61,6 @@ def main():
         out_dir = args.out_dir
         net = getattr(this_module, net)(config)
         net = net.cuda()
-        net = nn.DataParallel(net)
         if initial_checkpoint:
             print('[Loading model from %s]' % initial_checkpoint)
             checkpoint = torch.load(initial_checkpoint)
@@ -71,6 +70,7 @@ def main():
             print('No model weight file specified')
             return
         print('out_dir', out_dir)
+        net = nn.DataParallel(net)
         save_dir = os.path.join(out_dir)
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
