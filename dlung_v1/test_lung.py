@@ -130,7 +130,9 @@ def convert_csv_2_origin(filename, outputname):
         xyz = xyz
         spacing = os.path.join(config['preprocessed_data_dir'], '%s_spacing_origin.npy' % (result[i][0]))
         origin = os.path.join(config['preprocessed_data_dir'], '%s_origin.npy' % (result[i][0]))
+        print("spacing before:", spacing.shape)
         spacing = np.array(list(reversed(spacing)))
+        print("spacing after:", spacing.shape)
         origin = np.array(list(reversed(origin)))
         print('%s_spacing_origin.npy' % (result[i][0]))
         xyz = xyz * resolution / spacing
@@ -159,7 +161,6 @@ def eval(net, dataset, save_dir=None):
 
             with torch.no_grad():
                 input = input.cuda().unsqueeze(0)
-                #net.forward(input, truth_bboxes, truth_labels, truth_masks, mask)
                 net.forward(input)
 
             rpns = net.rpn_proposals.cpu().numpy()
