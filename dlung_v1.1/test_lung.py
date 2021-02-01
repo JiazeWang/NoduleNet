@@ -15,6 +15,7 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 from torch.autograd import Variable
 from torch.nn.parallel.data_parallel import data_parallel
+import torch.nn as nn
 from scipy.ndimage.measurements import label
 from scipy.ndimage import center_of_mass
 from net.nodule_net import NoduleNet
@@ -30,7 +31,7 @@ from evaluationScript.noduleCADEvaluationLUNA16 import noduleCADEvaluation
 plt.rcParams['figure.figsize'] = (24, 16)
 plt.switch_backend('agg')
 this_module = sys.modules[__name__]
-os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+os.environ['CUDA_VISIBLE_DEVICES'] = '0,1,2,3'
 
 
 parser = argparse.ArgumentParser()
@@ -60,6 +61,7 @@ def main():
         out_dir = args.out_dir
         net = getattr(this_module, net)(config)
         net = net.cuda()
+        net = nn.DataParallel(net)
         if initial_checkpoint:
             print('[Loading model from %s]' % initial_checkpoint)
             checkpoint = torch.load(initial_checkpoint)
