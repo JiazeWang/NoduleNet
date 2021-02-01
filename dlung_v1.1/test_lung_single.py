@@ -70,8 +70,6 @@ def main():
             print('No model weight file specified')
             return
         print('out_dir', out_dir)
-        net.set_mode('eval')
-        net = nn.DataParallel(net)
         save_dir = os.path.join(out_dir)
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
@@ -204,7 +202,7 @@ def convert_csv_2_origin(filename, outputname):
     df.to_csv(submission_path, index=False)
 
 def eval(net, dataset, save_dir=None):
-    net.eval()
+    net.set_mode('eval')
     net.use_mask = False
     net.use_rcnn = True
     aps = []
@@ -223,13 +221,13 @@ def eval(net, dataset, save_dir=None):
                 input = input.cuda().unsqueeze(0)
                 net.forward(input)
 
-            rpns = net.module.rpn_proposals.cpu().numpy()
-            detections = net.module.detections.cpu().numpy()
-            ensembles = net.module.ensemble_proposals.cpu().numpy()
+            rpns = net.rpn_proposals.cpu().numpy()
+            detections = net.detections.cpu().numpy()
+            ensembles = net.ensemble_proposals.cpu().numpy()
 
-            if len(detections) and net.module.use_mask:
-                crop_boxes = net.module.crop_boxes
-                segments = [F.sigmoid(m).cpu().numpy() > 0.5 for m in net.module.mask_probs]
+            if len(detections) and net.use_mask:
+                crop_boxes = net.crop_boxes
+                segments = [F.sigmoid(m).cpu().numpy() > 0.5 for m in net.mask_probs]
                 pred_mask = crop_boxes2mask_single(crop_boxes[:, 1:], segments, input.shape[2:])
                 pred_mask = pred_mask.astype(np.uint8)
             else:
