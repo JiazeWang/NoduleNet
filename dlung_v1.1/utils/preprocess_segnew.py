@@ -421,7 +421,7 @@ def extract_lung(image, spacing):
     # seperate two lungs
     binary_mask1, binary_mask2 = seperate_two_lung(binary_mask, spacing)
 
-    return (binary_mask1, binary_mask2, has_lung)
+    return binary_mask1, binary_mask2, has_lung
 
 
 def HU2uint8(image, HU_min=-1200.0, HU_max=600.0, HU_nan=-2000.0):
@@ -660,14 +660,18 @@ def preprocess(params):
 
     if do_resample:
         print('Resampling...')
-        seg_img, resampled_spacing = resample(seg_img, spacing, order=3)
-    lung_box = get_lung_box(binary_mask, seg_img.shape)
+        seg_img, resampled_spacing, haslung = resample(seg_img, spacing, order=3)
+    """
+    if has_lung:
+        lung_box = get_lung_box(binary_mask, seg_img.shape)
+        z_min, z_max = lung_box[0]
+        y_min, y_max = lung_box[1]
+        x_min, x_max = lung_box[2]
 
-    z_min, z_max = lung_box[0]
-    y_min, y_max = lung_box[1]
-    x_min, x_max = lung_box[2]
-
-    seg_img = seg_img[z_min:z_max, y_min:y_max, x_min:x_max]
+        seg_img = seg_img[z_min:z_max, y_min:y_max, x_min:x_max]
+    else:
+        seg_img = seg_img
+    """
     np.save(os.path.join(save_dir, '%s_origin.npy' % (savename)), origin)
     np.save(os.path.join(save_dir, '%s_spacing.npy' % (savename)), resampled_spacing)
     np.save(os.path.join(save_dir, '%s_spacing_origin.npy' % (savename)), spacing)
