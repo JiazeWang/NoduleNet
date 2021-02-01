@@ -747,6 +747,15 @@ def main():
     with open("record_folder_series.txt",'w') as f:
         f.write('\n'.join(record_series))
 
+    record_name = []
+    for line in record_series:
+        line = line.rstrip()
+        line = line.split('    ')
+        for i in range(1, len(line)):
+            record_name.append(line[i])
+    with open("record_series_list.txt",'w') as f:
+        f.write('\n'.join(record_name))
+
     for line in record_name:
         print("lung segmentation:", line)
         line = line.rstrip()
