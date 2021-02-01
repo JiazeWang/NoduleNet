@@ -12,7 +12,7 @@ torch.manual_seed(SEED)
 torch.cuda.manual_seed_all(SEED)
 
 # Preprocessing using preserved HU in dilated part of mask
-BASE = BASE = os.path.realpath(__file__)[:-14]+'/data/' # make sure you have the ending '/'
+BASE = BASE = os.path.realpath(__file__)[:-14]+'data/' # make sure you have the ending '/'
 data_config = {
     'data_dir': BASE,
     'data_txt': BASE + 'filedir.txt',
