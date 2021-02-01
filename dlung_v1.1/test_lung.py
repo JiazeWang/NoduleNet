@@ -70,7 +70,7 @@ def main():
             print('No model weight file specified')
             return
         print('out_dir', out_dir)
-        #net = nn.DataParallel(net)
+        net = nn.DataParallel(net)
         save_dir = os.path.join(out_dir)
         if not os.path.exists(save_dir):
             os.makedirs(save_dir)
@@ -203,8 +203,8 @@ def convert_csv_2_origin(filename, outputname):
     df.to_csv(submission_path, index=False)
 
 def eval(net, dataset, save_dir=None):
-    net.set_mode('eval')
-
+    #net.set_mode('eval')
+    net.eval()
     net.use_mask = False
     net.use_rcnn = True
     aps = []
