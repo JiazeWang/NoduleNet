@@ -763,7 +763,7 @@ def main():
         get_lung_mhd(os.path.join(mhd_dir, line+'.mhd'), os.path.join(lung_mask_dir, line))
 
     params_lists = []
-    for line in lines:
+    for line in record_name:
         line = line.rstrip()
         savename = line
         pid_mask = os.path.join(lung_mask_dir, savename)
