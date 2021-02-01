@@ -23,14 +23,3 @@ python preprocess_lidc.py
 4 Run inference:
 python test_lung.py eval
 Then we can get the result in the json: result.json
-
-5 Current Performance:
-LUNA16:
-
-fps: 0.125 , sensitivity: 0.8071428571428572
-fps: 0.25 , sensitivity: 0.8357142857142857
-fps: 0.5 , sensitivity: 0.8928571428571429
-fps: 1 , sensitivity: 0.9142857142857143
-fps: 2 , sensitivity: 0.95
-fps: 4 , sensitivity: 0.9642857142857143
-fps: 8 , sensitivity: 0.9642857142857143

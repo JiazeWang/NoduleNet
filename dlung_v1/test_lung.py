@@ -156,8 +156,8 @@ def convert_json(input, output, thresholds=0.5):
         else:
             nudule = {}
             series = {"SeriesName": record, \
-                      "PatientID": patientdic[record], \
-                      "StudyId": studydic[record],\
+                      "PatientFolder": patientdic[record], \
+                      "StudyFolder": studydic[record],\
                       "nodules": nudule,}
             nudule["NoduleScore"] = NoduleScore
             nudule["NoduleClass"] = NoduleClass

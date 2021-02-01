@@ -120,7 +120,7 @@ def convert_json(input, output, thresholds=0.5):
 """
 
 def convert_json(input, output, thresholds=0.5):
-    with open("data/submission_v1.csv", 'r') as f:
+    with open("utils/record_folder_series.txt", 'r') as f:
         lines = f.readlines()
     patientdic = {}
     studydic = {}
@@ -156,8 +156,8 @@ def convert_json(input, output, thresholds=0.5):
         else:
             nudule = {}
             series = {"SeriesName": record, \
-                      "PatientID": patientdic[record], \
-                      "StudyId": studydic[record],\
+                      "PatientFolder": patientdic[record], \
+                      "StudyFolder": studydic[record],\
                       "nodules": nudule,}
             nudule["NoduleScore"] = NoduleScore
             nudule["NoduleClass"] = NoduleClass
