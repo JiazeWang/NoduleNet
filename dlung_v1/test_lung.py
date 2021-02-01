@@ -132,7 +132,7 @@ def convert_csv_2_origin(filename, outputname):
         origin = os.path.join(config['preprocessed_data_dir'], '%s_origin.npy' % (result[i][0]))
         spacing = np.array(list(reversed(spacing)))
         origin = np.array(list(reversed(origin)))
-        print(xyz.shape, spacing.shape)
+        print("xyz.shape:", xyz.shape, "spacing.shape:", spacing.shape)
         xyz = xyz * resolution / spacing
         new.append([result[i][0], xyz[0], xyz[1], xyz[2], size, pro])
     #new = np.concatenate(new, axis=0)
