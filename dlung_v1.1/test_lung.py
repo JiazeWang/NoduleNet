@@ -250,8 +250,6 @@ def eval(net, dataset, save_dir=None):
             if len(ensembles):
                 ensembles = ensembles[:, 1:]
                 np.save(os.path.join(save_dir, '%s_ensembles.npy' % (pid)), ensembles)
-
-
             # Clear gpu memory
             del input, image#, gt_mask, gt_img, pred_img, full, score
             torch.cuda.empty_cache()
