@@ -421,7 +421,7 @@ def extract_lung(image, spacing):
     # seperate two lungs
     binary_mask1, binary_mask2 = seperate_two_lung(binary_mask, spacing)
 
-    return binary_mask1, binary_mask2, has_lung
+    return binary_mask1, binary_mask2
 
 
 def HU2uint8(image, HU_min=-1200.0, HU_max=600.0, HU_nan=-2000.0):

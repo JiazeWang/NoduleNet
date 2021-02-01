@@ -668,6 +668,7 @@ def preprocess(params):
     if do_resample:
         print('Resampling...')
         seg_img, resampled_spacing = resample(seg_img, spacing, order=3)
+    """
     lung_box = get_lung_box(binary_mask, seg_img.shape)
 
     z_min, z_max = lung_box[0]
@@ -675,6 +676,7 @@ def preprocess(params):
     x_min, x_max = lung_box[2]
 
     seg_img = seg_img[z_min:z_max, y_min:y_max, x_min:x_max]
+    """
     np.save(os.path.join(save_dir, '%s_origin.npy' % (savename)), origin)
     np.save(os.path.join(save_dir, '%s_spacing.npy' % (savename)), resampled_spacing)
     np.save(os.path.join(save_dir, '%s_spacing_origin.npy' % (savename)), spacing)
