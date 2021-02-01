@@ -79,6 +79,7 @@ def main():
     else:
         logging.error('Mode %s is not supported' % (args.mode))
 
+"""
 def convert_json(input, output, thresholds=0.5):
     with open(input, "r") as f:
         lines = f.readlines()
@@ -113,6 +114,65 @@ def convert_json(input, output, thresholds=0.5):
             NoduleDiameter.append(line[4])
             record = line[0]
             result.append(patient)
+        num = num + 1
+    with open(output,'w',encoding='utf-8') as f:
+        f.write(json.dumps(result,indent=2))
+"""
+
+def convert_json(input, output, thresholds=0.5):
+    with open("data/submission_v1.csv", 'r') as f:
+        lines = f.readlines()
+    patientdic = {}
+    studydic = {}
+    for line in lines:
+        line = line.rstrip()
+        line = line.split("    ")
+        name = line[0]
+        patientname = name.split("/")[1]
+        studyname = name[8:]
+        for i in line[1:]:
+            patientdic[i] = patientname
+            studydic[i] = studyname
+    with open(input, "r") as f:
+        lines = f.readlines()
+    NoduleClass, NoduleScore, NoduleCoordinates, NoduleDiameter= [], [], [], []
+    nudule = {}
+    num = 0
+    result = []
+    record = lines[1].split(",")[0]
+    lines.append(lines[1])
+    for line in lines[1:]:
+        nodule_dic = {}
+        line = line.rstrip()
+        line = line.split(",")
+        if line[0] == record and num+1<len(lines[1:]):
+            NoduleScore.append(line[-1])
+            if float(line[-1])> thresholds:
+                NoduleClass.append(1)
+            else:
+                NoduleClass.append(0)
+            NoduleCoordinates.append([line[1], line[2], line[3]])
+            NoduleDiameter.append(line[4])
+        else:
+            nudule = {}
+            series = {"SeriesName": record, \
+                      "PatientID": patientdic[record], \
+                      "StudyId": studydic[record],\
+                      "nodules": nudule,}
+            nudule["NoduleScore"] = NoduleScore
+            nudule["NoduleClass"] = NoduleClass
+            nudule["NoduleCoordinates"] = NoduleCoordinates
+            nudule["NoduleDiameter"] = NoduleDiameter
+            NoduleClass, NoduleScore, NoduleCoordinates, NoduleDiameter = [], [], [], []
+            if float(line[-1])> thresholds:
+                NoduleClass.append(1)
+            else:
+                NoduleClass.append(0)
+            NoduleScore.append(line[-1])
+            NoduleCoordinates.append([line[1], line[2], line[3]])
+            NoduleDiameter.append(line[4])
+            record = line[0]
+            result.append(series)
         num = num + 1
     with open(output,'w',encoding='utf-8') as f:
         f.write(json.dumps(result,indent=2))
