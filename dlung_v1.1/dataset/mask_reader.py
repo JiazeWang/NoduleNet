@@ -93,20 +93,10 @@ class MaskReader(Dataset):
 
         if self.mode in ['eval']:
             image = self.load_img(self.filenames[idx])
-
             original_image = image[0]
 
             image = pad2factor(image[0])
             image = np.expand_dims(image, 0)
-
-            #mask = self.load_mask(self.filenames[idx])
-            #mask = pad2factor(mask)
-            #bboxes, truth_masks = masks2bboxes_masks_one(mask, border=self.cfg['bbox_border'])
-            #truth_masks = np.array(truth_masks).astype(np.uint8)
-            #bboxes = np.array(bboxes)
-            #truth_labels = bboxes[:, -1]
-            #truth_bboxes = bboxes[:, :-1]
-            #masks = np.expand_dims(mask, 0).astype(np.float32)
 
             input = (image.astype(np.float32) - 128.) / 128.
 
