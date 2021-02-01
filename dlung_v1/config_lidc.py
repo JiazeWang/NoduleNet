@@ -117,7 +117,7 @@ train_config = {
 
     'train_set_list': ['split/3_train.csv'],
     'val_set_list': ['split/3_val.csv'],
-    'test_set_name': BASE + 'eval.csv',
+    'test_set_name': '../utils/record_series_list.txt',
     'label_types': ['mask'],
     'DATA_DIR': data_config['preprocessed_data_dir'],
     'ROOT_DIR': os.getcwd()
