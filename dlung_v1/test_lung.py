@@ -30,7 +30,7 @@ from evaluationScript.noduleCADEvaluationLUNA16 import noduleCADEvaluation
 plt.rcParams['figure.figsize'] = (24, 16)
 plt.switch_backend('agg')
 this_module = sys.modules[__name__]
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
+os.environ['CUDA_VISIBLE_DEVICES'] = '1'
 
 
 parser = argparse.ArgumentParser()
@@ -122,6 +122,7 @@ def convert_csv_2_origin(filename, outputname):
     df = pd.read_csv(CSV_FILE_PATH)
     result = df.values.tolist()
     new = []
+    resolution = np.array([1,1,1])
     for i in range(0, len(result)):
         xyz = np.array([result[i][1], result[i][2], result[i][3]])
         size = result[i][4]
@@ -131,6 +132,7 @@ def convert_csv_2_origin(filename, outputname):
         origin = os.path.join(config['preprocessed_data_dir'], '%s_origin.npy' % (result[i][0]))
         spacing = np.array(list(reversed(spacing)))
         origin = np.array(list(reversed(origin)))
+        xyz = xyz * resolution / spacing
         new.append([result[i][0], xyz[0], xyz[1], xyz[2], size, pro])
     #new = np.concatenate(new, axis=0)
     col_names = ['seriesuid','coordX','coordY','coordZ','diameter_mm', 'probability']
