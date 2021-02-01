@@ -19,7 +19,7 @@ put the datafolder under data like CT-Lung
 cd data
 python filedir.py
 cd utils
-python preprocess_lidc.py
+python preprocess_ha.py
 
 4 Run inference:
 cd ..
