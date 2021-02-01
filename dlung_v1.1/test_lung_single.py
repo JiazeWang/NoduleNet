@@ -225,17 +225,13 @@ def eval(net, dataset, save_dir=None):
             detections = net.detections.cpu().numpy()
             ensembles = net.ensemble_proposals.cpu().numpy()
 
-            if len(detections) and net.use_mask:
-                crop_boxes = net.crop_boxes
-                segments = [F.sigmoid(m).cpu().numpy() > 0.5 for m in net.mask_probs]
-                pred_mask = crop_boxes2mask_single(crop_boxes[:, 1:], segments, input.shape[2:])
-                pred_mask = pred_mask.astype(np.uint8)
-            else:
-                pred_mask = np.zeros((input[0].shape))
             print('rpn', rpns.shape)
             print('detection', detections.shape)
             print('ensemble', ensembles.shape)
 
+            # Clear gpu memory
+            del input, image#, gt_mask, gt_img, pred_img, full, score
+            torch.cuda.empty_cache()
 
             if len(rpns):
                 rpns = rpns[:, 1:]
@@ -248,10 +244,6 @@ def eval(net, dataset, save_dir=None):
             if len(ensembles):
                 ensembles = ensembles[:, 1:]
                 np.save(os.path.join(save_dir, '%s_ensembles.npy' % (pid)), ensembles)
-            # Clear gpu memory
-            del input, image#, gt_mask, gt_img, pred_img, full, score
-            torch.cuda.empty_cache()
-
         except Exception as e:
             del input, image,
             torch.cuda.empty_cache()
