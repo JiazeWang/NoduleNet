@@ -70,7 +70,7 @@ def main():
             print('No model weight file specified')
             return
         print('out_dir', out_dir)
-        net.set_mode('eval')[]
+        net.set_mode('eval')
         net = nn.DataParallel(net)
         save_dir = os.path.join(out_dir)
         if not os.path.exists(save_dir):
