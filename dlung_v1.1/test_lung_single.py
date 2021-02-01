@@ -232,7 +232,7 @@ def eval(net, dataset, save_dir=None):
             # Clear gpu memory
             del input, image#, gt_mask, gt_img, pred_img, full, score
             torch.cuda.empty_cache()
-te
+
             if len(rpns):
                 rpns = rpns[:, 1:]
                 np.save(os.path.join(save_dir, '%s_rpns.npy' % (pid)), rpns)
