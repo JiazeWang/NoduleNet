@@ -253,7 +253,7 @@ def eval(net, dataset, save_dir=None):
 
 
             # Clear gpu memory
-            del input#, gt_mask, gt_img, pred_img, full, score
+            del input, image#, gt_mask, gt_img, pred_img, full, score
             torch.cuda.empty_cache()
 
         except Exception as e:
