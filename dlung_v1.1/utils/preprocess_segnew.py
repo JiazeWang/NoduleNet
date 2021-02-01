@@ -660,7 +660,7 @@ def preprocess(params):
 
     if do_resample:
         print('Resampling...')
-        seg_img, resampled_spacing, haslung = resample(seg_img, spacing, order=3)
+        seg_img, resampled_spacing = resample(seg_img, spacing, order=3)
     """
     if has_lung:
         lung_box = get_lung_box(binary_mask, seg_img.shape)
