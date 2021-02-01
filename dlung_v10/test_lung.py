@@ -120,7 +120,7 @@ def convert_json(input, output, thresholds=0.5):
 """
 
 def convert_json(input, output, thresholds=0.5):
-    with open("utils/record_folder_series.txt", 'r') as f:
+    with open("data/submission_v1.csv", 'r') as f:
         lines = f.readlines()
     patientdic = {}
     studydic = {}
