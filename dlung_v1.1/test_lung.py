@@ -294,7 +294,6 @@ def eval(net, dataset, save_dir=None):
     ensemble_submission_path_v1 = os.path.join(eval_dir, 'submission_v1.csv')
     convert_csv_2_origin(ensemble_submission_path, ensemble_submission_path_v1)
     convert_json(ensemble_submission_path_v1, "result.json")
-
     print
 
 if __name__ == '__main__':
