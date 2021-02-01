@@ -387,8 +387,9 @@ class NoduleNet(nn.Module):
 
             if self.mode in ['eval']:
                 # Ensemble
-                fpr_res = get_probability(self.cfg, self.mode, inputs, self.rpn_proposals,  self.rcnn_logits, self.rcnn_deltas)
-                self.ensemble_proposals[:, 1] = (self.ensemble_proposals[:, 1] + fpr_res[:, 0]) / 2
+                if len(self.rpn_proposals) > 0:
+                    fpr_res = get_probability(self.cfg, self.mode, inputs, self.rpn_proposals,  self.rcnn_logits, self.rcnn_deltas)
+                    self.ensemble_proposals[:, 1] = (self.ensemble_proposals[:, 1] + fpr_res[:, 0]) / 2
 
             if self.use_mask and len(self.detections):
                 # keep batch index, z, y, x, d, h, w, class
