@@ -92,8 +92,7 @@ def binarize(image, spacing, intensity_thred=-600, sigma=1.0, area_thred=30.0,
         if num_uniq == 1:
             slice_raw *= nan_mask
 
-        slice_smoothed =
-        .ndimage.gaussian_filter(slice_raw, sigma,
+        slice_smoothed = scipy.ndimage.gaussian_filter(slice_raw, sigma,
                                                        truncate=2.0)
 
         # mask of low-intensity pixels (True = lungs, air)
