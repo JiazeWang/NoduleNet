@@ -203,7 +203,8 @@ def convert_csv_2_origin(filename, outputname):
     df.to_csv(submission_path, index=False)
 
 def eval(net, dataset, save_dir=None):
-    net.set_mode('eval')
+    #net.set_mode('eval')
+    net.eval()
     net.use_mask = False
     net.use_rcnn = True
     aps = []
