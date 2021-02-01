@@ -681,6 +681,7 @@ def preprocess(params):
     np.save(os.path.join(save_dir, '%s_spacing.npy' % (savename)), resampled_spacing)
     np.save(os.path.join(save_dir, '%s_spacing_origin.npy' % (savename)), spacing)
     #np.save(os.path.join(save_dir, '%s_ebox_origin.npy' % (savename)), np.array((z_min, y_min, x_min)))
+    np.save(os.path.join(save_dir, '%s_clean.npy' % (savename)), seg_img)
     nrrd.write(os.path.join(save_dir, '%s_clean.nrrd' % (savename)), seg_img)
     print('Finished %s' % (pid))
     print()
