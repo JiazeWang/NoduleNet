@@ -753,7 +753,7 @@ def main():
         line = line.split('    ')
         for i in range(1, len(line)):
             record_name.append(line[i])
-    with open("record_series_list.txt",'w') as f:
+    with open("record_series_list.csv",'w') as f:
         f.write('\n'.join(record_name))
 
     for line in record_name:
