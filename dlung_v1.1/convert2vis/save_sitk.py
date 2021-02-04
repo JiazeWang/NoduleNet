@@ -40,7 +40,7 @@ def writeSlices(series_tag_values, new_img, out_dir, i, writer):
     writer.SetFileName(os.path.join(out_dir, str(i) + '.dcm'))
     writer.Execute(image_slice)
 
-def savedicom(outputdir, input, spacing, pixel_dtypes="int16"):
+def savedicom(outputdir, input, spacing, origin, pixel_dtypes="int16"):
     pixel_dtype = pixel_dtypes
     input = input.astype(pixel_dtypes)
     new_arr = input
@@ -48,6 +48,7 @@ def savedicom(outputdir, input, spacing, pixel_dtypes="int16"):
     new_img = sitk.GetImageFromArray(new_arr)
     #new_img.SetSpacing([1,1,1])
     new_img.SetSpacing(spacing)
+    new_img.SetOrigin(origin)
 
     # Write the 3D image as a series
     # IMPORTANT: There are many DICOM tags that need to be updated when you modify

@@ -29,7 +29,7 @@ def main():
         outputdir="result/"+line[0:-4]
         if not os.path.exists(outputdir):
             os.makedirs(outputdir)
-        savedicom(outputdir, input, spacing, pixel_dtypes="int16")
+        savedicom(outputdir, input, spacing, orgin, pixel_dtypes="int16")
 
 if __name__=='__main__':
     main()
