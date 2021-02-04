@@ -1,6 +1,7 @@
 import SimpleITK as sitk
 import numpy as np
 from save_sitk import savedicom
+import os
 
 def load_itk_image(filename):
     """Return img array and [z,y,x]-ordered origin and spacing
