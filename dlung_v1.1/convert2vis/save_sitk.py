@@ -47,7 +47,7 @@ def savedicom(outputdir, input, spacing, pixel_dtypes="int16"):
     #new_arr = np.random.uniform(0, 255, size=(301, 360, 360)).astype(pixel_dtype)
     new_img = sitk.GetImageFromArray(new_arr)
     #new_img.SetSpacing([1,1,1])
-    new_imag.SetSpacing(spacing)
+    new_img.SetSpacing(spacing)
 
     # Write the 3D image as a series
     # IMPORTANT: There are many DICOM tags that need to be updated when you modify
