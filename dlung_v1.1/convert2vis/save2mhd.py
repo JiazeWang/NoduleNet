@@ -25,11 +25,11 @@ def main():
     for line in lines:
         line = line.rstrip()
         filefullname = "/research/dept8/jzwang/code/lung_nodule_detector/dlung_v1/data/mhd/"+line
-        input, _, _ = load_itk_image(filefullname)
+        input, orgin, spacing= load_itk_image(filefullname)
         outputdir="result/"+line
         if not os.path.exists(outputdir):
             os.makedirs(outputdir)
-        savedicom(outputdir, input,  pixel_dtypes="int16")
+        savedicom(outputdir, input, spacing, pixel_dtypes="int16")
 
 if __name__=='__main__':
     main()
