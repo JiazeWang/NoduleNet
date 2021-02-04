@@ -26,7 +26,7 @@ def main():
         line = line.rstrip()
         filefullname = "/research/dept8/jzwang/code/lung_nodule_detector/dlung_v1/data/mhd/"+line
         input, orgin, spacing= load_itk_image(filefullname)
-        outputdir="result/"+line
+        outputdir="result/"+line[0:-4]
         if not os.path.exists(outputdir):
             os.makedirs(outputdir)
         savedicom(outputdir, input, spacing, pixel_dtypes="int16")
