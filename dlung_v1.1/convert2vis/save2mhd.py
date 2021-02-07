@@ -61,6 +61,7 @@ def main():
             os.makedirs(outputdir)
         orgin = np.array(list(reversed(orgin)))
         resampled_spacing = np.array(list(reversed(resampled_spacing)))
+        print("resampled_spacing:", resampled_spacing)
         savedicom(resamplenew, input, resampled_spacing, orgin, pixel_dtypes="int16")
 
 if __name__=='__main__':
