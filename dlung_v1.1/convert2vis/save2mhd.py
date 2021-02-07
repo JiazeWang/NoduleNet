@@ -45,6 +45,25 @@ def resample(image, spacing, new_spacing=[1.0, 1.0, 1.0], order=1):
 
     return (image_new, resample_spacing)
 
+def HU2uint8(image, HU_min=-1200.0, HU_max=600.0, HU_nan=-2000.0):
+    """
+    Convert HU unit into uint8 values. First bound HU values by predfined min
+    and max, and then normalize
+    image: 3D numpy array of raw HU values from CT series in [z, y, x] order.
+    HU_min: float, min HU value.
+    HU_max: float, max HU value.
+    HU_nan: float, value for nan in the raw CT image.
+    """
+    image_new = np.array(image)
+    image_new[np.isnan(image_new)] = HU_nan
+
+    # normalize to [0, 1]
+    image_new = (image_new - HU_min) / (HU_max - HU_min)
+    image_new = np.clip(image_new, 0, 1)
+    image_new = (image_new * 255).astype('uint8')
+
+    return image_new
+
 
 def main():
     filelist = "/research/dept8/jzwang/code/lung_nodule_detector/dlung_v1/data/patient_mhd.txt"
@@ -55,6 +74,7 @@ def main():
         line = line.rstrip()
         filefullname = "/research/dept8/jzwang/code/lung_nodule_detector/dlung_v1/data/mhd/"+line
         input, orgin, spacing= load_itk_image(filefullname)
+        input = HU2uint8(HU2uint8)
         resamplenew, resampled_spacing = resample(input, spacing, order=3)
         outputdir="result_resample/"+line[0:-4]
         if not os.path.exists(outputdir):
