@@ -2,6 +2,10 @@ import SimpleITK as sitk
 import numpy as np
 from save_sitk import savedicom
 import os
+import scipy.ndimage
+from scipy.ndimage.measurements import label
+from scipy.ndimage.interpolation import zoom
+from scipy.ndimage.morphology import binary_dilation,generate_binary_structure
 
 def load_itk_image(filename):
     """Return img array and [z,y,x]-ordered origin and spacing
