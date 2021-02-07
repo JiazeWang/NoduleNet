@@ -60,7 +60,7 @@ def main():
         if not os.path.exists(outputdir):
             os.makedirs(outputdir)
         orgin = np.array(list(reversed(orgin)))
-        resampled_spacing = np.array(list(revesed(resampled_spacing)))
+        resampled_spacing = np.array(list(reversed(resampled_spacing)))
         savedicom(resamplenew, input, resampled_spacing, orgin, pixel_dtypes="int16")
 
 if __name__=='__main__':
