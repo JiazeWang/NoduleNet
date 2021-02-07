@@ -74,7 +74,7 @@ def main():
         line = line.rstrip()
         filefullname = "/research/dept8/jzwang/code/lung_nodule_detector/dlung_v1/data/mhd/"+line
         input, orgin, spacing= load_itk_image(filefullname)
-        input = HU2uint8(HU2uint8)
+        input = HU2uint8(input)
         resamplenew, resampled_spacing = resample(input, spacing, order=3)
         outputdir="result_resample/"+line[0:-4]
         if not os.path.exists(outputdir):
