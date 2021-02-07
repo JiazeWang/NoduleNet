@@ -10,8 +10,8 @@ def load_itk_image(filename):
     itkimage = sitk.ReadImage(filename)
     numpyImage = sitk.GetArrayFromImage(itkimage)
 
-    numpyOrigin = itkimage.GetOrigin()
-    numpySpacing = itkimage.GetSpacing()
+    numpyOrigin = np.array(list(reversed(itkimage.GetOrigin())))
+    numpySpacing = np.array(list(reversed(itkimage.GetSpacing())))
 
     return numpyImage, numpyOrigin, numpySpacing
 
@@ -55,6 +55,8 @@ def main():
         outputdir="result_resample/"+line[0:-4]
         if not os.path.exists(outputdir):
             os.makedirs(outputdir)
+        orgin = np.array(list(reversed(orgin)))
+        resampled_spacing = np.array(list(revesed(resampled_spacing)))
         savedicom(resamplenew, input, resampled_spacing, orgin, pixel_dtypes="int16")
 
 if __name__=='__main__':
